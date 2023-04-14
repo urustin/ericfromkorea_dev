@@ -1,10 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Roboto:wght@400;500;700&display=swap");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard-std.css");
 
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	/* font-family: "Roboto", sans-serif; */
+	font-family: "Pretendard Std", sans-serif;
+    letter-spacing: 0.4px;
 }
 
 body{
@@ -12,12 +13,26 @@ body{
     background-repeat: repeat;
     background-size: cover
 }
-.top1{
+.titleBox{
+    width: 60%;
     margin-top: 20px;
-    margin-left : 30%;
+    margin-left: 30%;
+}
+
+@media screen and (min-width: 700px) {
+    .titleBox {
+        margin-left:10%;
+        margin-top: 25px;
+    }
+}
+
+.top1{
+    font-weight: 900;
+    /* margin-left : 30%; */
 }
 .top2{
-    margin-left : 30%;
+    font-weight: 200;
+    /* margin-left : 30%; */
 }
 
 .linkBox{
@@ -44,16 +59,11 @@ body{
     /* flex: 1 1 0; */
     
 }
-.box h4{
-    transition: 0.5s;
-}
-.box:hover {
+
+.linkBox .box:hover {
     scale: 1.01;
     opacity: 0.8;
-
-}
-.box:hover h4{
-    letter-spacing: 0.1px;
+    
 }
 
 .boxImg{
@@ -63,6 +73,63 @@ body{
 }
 
 .textBox{
-    width: 90%;
-    margin-left : 5%;
+    width: 92%;
+    margin-left :4%;
+}
+.textBox a{
+    text-decoration: none;
+    color: black;
+    font-weight: 700;
+    /* color: aliceblue; */
+    
+}
+.textBox h4{
+    margin-top : 8px;
+    margin-bottom: 2px;
+
+}
+.textBox:nth-child(2){
+    margin-bottom: 5px;
+}
+.textBox h5{
+    font-weight: 300;
+}
+
+
+/* .textBox  */
+
+
+/* profileBox */
+
+.profileBox{
+    display: flex;
+    width: 87%;
+    margin-left: 6.5%;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+}
+.profileImg{
+    width: 300px;
+    height: 300px;
+    background-image: url(./src/profile.jpg);
+    background-position: center;
+    
+    background-size: 2;
+    background-size: cover;
+
+}
+.profileText{
+    
+    width: 500px;
+    margin-left:10px;
+}
+.profileText h4{
+    font-weight: 300;
+}
+.skills li{
+    list-style-type: none;
+    font-weight: 300;
+    line-height: 1.5;
 }
