@@ -11,7 +11,7 @@
 body{
     background-image: url("./src/bg01.webp");
     background-repeat: repeat;
-    background-size: cover
+    background-size: cover;
 }
 .titleBox{
     width: 60%;
@@ -68,7 +68,7 @@ body{
 
 .boxImg{
     width: 100%;
-    height: 200px;
+    height: 224px;
     border-radius: 10px;
 }
 
