@@ -1,46 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Freelancer</title>
+<script>
 
-    
-    <link rel="stylesheet" href="style.css">
+    var type=navigator.appName
+    if (type=="Netscape")
+    var lang = navigator.language
+    else
+    var lang = navigator.userLanguage
+
+    // 국가코드에서 앞 2글자만 자름
+    var lang = lang.substr(0,2)
+
+    // 영어인 경우
+    if (lang == "ko")
+    window.location.replace('https://naver.com')
 
 
+    // 위의 어느것도 아닌경우 (디폴트 페이지)
+    else
+    window.location.replace('https://google.com')
+
+</script>
 </head>
 <body>
-    <div class="titleBox">
-        <h1 class="top1">Eric Son</h1>
-        <h2 class="top2">Web Developer</h2>
-    </div>
+ 
     
-    <div class="linkBox">
-        
-    </div>
-    
-    <div class="profileBox box">
-        <img class="profileImg">
-        <div class="profileText">
-            <h2>Eric Son</h2>
-            <h4>E. ericfromkorea@gmail.com</h4>
-            <h4>P. 0456 700 883</h4>
-            <h4>A. 8 Sutherland St, VIC 3000</h4>
-            <br>
-            <h2>Skills</h2>
-            <ul class="skills">
-                <li>Proficient in HTML5, CSS3, JavaScript, and MERN stack (MongoDB, Express, React, Node.js)</li>
-                <li>Strong background in developing single-page applications (SPAs) using React</li>
-                <li>Experience with CSS preprocessors such as Sass or Less</li>
-                <li>Understanding of cross-browser compatibility and web standards</li>
-                <li>Professional video editing and design skills, including experience with Adobe Creative Suite (Photoshop, Illustrator, Premiere Pro, etc.)</li>
-                <li>Excellent communication and teamwork abilities</li>
-            </ul>
-        </div>
-    </div>
 </body>
-<script type="module" src="listGenerator.js"></script>
-
 </html>
