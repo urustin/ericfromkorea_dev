@@ -1,0 +1,51 @@
+<!DOCTYPE html><html><body><div id="app"></div><div id="out">RUNNING</div>
+<script type="module">
+import { makeBlockEl, blockToData } from './js/editor/blockedit/factory.js';
+import { enableDnd } from './js/editor/blockedit/dnd.js';
+const out = [];
+const surface = document.createElement('div');
+surface.className = 'ne';
+document.querySelector('#app').append(surface);
+const A = makeBlockEl({ type: 'image', src: 'a.png' });
+const B = makeBlockEl({ type: 'image', src: 'b.png' });
+const C = makeBlockEl({ type: 'paragraph', rich: [{ text: 'c' }] });
+surface.append(A, B, C);
+enableDnd(surface);
+
+function drag(srcBlock, overBlock, x, y) {
+  const dt = new DataTransfer();
+  const handle = srcBlock.querySelector('.ne-handle');
+  handle.dispatchEvent(new DragEvent('dragstart', { bubbles: true, dataTransfer: dt }));
+  const r = overBlock.getBoundingClientRect();
+  const cx = r.left + r.width * x, cy = r.top + r.height * y;
+  overBlock.dispatchEvent(new DragEvent('dragover', { bubbles: true, dataTransfer: dt, clientX: cx, clientY: cy }));
+  const lineVisible = !document.querySelector('.ne-dropline').classList.contains('hidden');
+  overBlock.dispatchEvent(new DragEvent('drop', { bubbles: true, dataTransfer: dt, clientX: cx, clientY: cy }));
+  surface.dispatchEvent(new DragEvent('dragend', { bubbles: true, dataTransfer: dt }));
+  return lineVisible;
+}
+
+// 1) A를 B의 오른쪽 가장자리에 드롭 → 2열 컬럼 생성
+const ind1 = drag(A, B, 0.95, 0.5);
+const cols1 = surface.querySelectorAll('.ne-cols').length;
+const colCnt = surface.querySelectorAll('.ne-col').length;
+out.push(`side-drop: indicator=${ind1} column_list=${cols1} cols=${colCnt}`);
+
+// 2) C를 컬럼 안 블록(B) 오른쪽에 드롭 → 3열
+const Bnow = surface.querySelector('.ne-col .ne-block[data-type="image"]');
+drag(C, Bnow, 0.95, 0.5);
+out.push(`third-col: cols=${surface.querySelectorAll('.ne-col').length}`);
+
+// 3) 직렬화 결과 확인
+const data = [...surface.querySelectorAll(':scope > .ne-block')].map(blockToData);
+out.push('top types=' + data.map((b) => b.type).join(','));
+const cl = data.find((b) => b.type === 'column_list');
+out.push('column children=' + (cl ? cl.children.map((c) => (c.children || []).map((x) => x.type).join('+')).join(' | ') : 'none'));
+
+// 4) 컬럼에서 블록을 밖으로 빼면(2열 중 한쪽 비움) 컬럼 해제되는지
+const inner = surface.querySelectorAll('.ne-col .ne-block');
+drag(inner[0], surface.querySelector(':scope > .ne-block:last-child'), 0.5, 0.9);
+drag(surface.querySelectorAll('.ne-col .ne-block')[0], surface.querySelector(':scope > .ne-block:last-child'), 0.5, 0.9);
+out.push(`after-pullout: column_list=${surface.querySelectorAll('.ne-cols').length} blocks=${surface.querySelectorAll(':scope > .ne-block').length}`);
+document.getElementById('out').textContent = out.join('\n');
+</script></body></html>

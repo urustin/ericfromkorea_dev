@@ -51,6 +51,9 @@ function colEl(children, mk) {
     kidsEl(children, mk));
 }
 
+// 드래그 드롭으로 컬럼을 만들 때 쓰는 빈 컬럼 (dnd.js에서 사용)
+export const newColEl = (mk) => colEl(null, mk);
+
 function buildCols(b, mk) {
   const cols = (b.children && b.children.length ? b.children : [{}, {}])
     .map((c) => colEl(c.children, mk));

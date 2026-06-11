@@ -141,3 +141,8 @@ tr:hover .ne-xbtn { opacity:1; }
 /* 동영상/임베드 편집 */
 .ne-media__bar { display:flex; gap:8px; align-items:center; margin-bottom:6px; }
 .ne-media__url { flex:1; height:30px; }
+
+/* 드롭 위치 인디케이터 (파란 선) */
+.ne-dropline { position:absolute; z-index:230; background:var(--t-blue); border-radius:2px;
+  pointer-events:none; }
+.ne-dropline.hidden { display:none; }
