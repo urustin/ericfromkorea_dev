@@ -39,6 +39,10 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/api/me":
             return self._json(200 if self._authed() else 401, {"authed": self._authed()})
+        # dev.* 도메인의 루트(/)는 포트폴리오를 바로 보여준다 (hub.* 는 허브 유지)
+        host = self.headers.get("Host", "")
+        if self.path == "/" and host.startswith("dev."):
+            self.path = "/portfolio.html"
         return super().do_GET()
 
     def do_POST(self):

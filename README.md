@@ -64,26 +64,31 @@ python3 optimize_images.py                           # 이미지 최적화
 
 ### 2. 빌드 & 배포
 
+**실제 배포는 son-wtr(192.168.1.121, ssh 별칭 `aoo`)에서 돌아간다.** 이 머신(GPU 서버)은 작업용.
+
 ```bash
-cd fe
-docker build -t dev-portfolio-fe .
-docker rm -f dev-portfolio-fe
-docker run -d --name dev-portfolio-fe -p 60022:8000 --restart unless-stopped dev-portfolio-fe
+# 변경 파일을 son-wtr로 복사 후 재빌드
+scp <변경파일> aoo:~/prj/dev_portfolio/<경로>
+ssh aoo 'cd ~/prj/dev_portfolio/fe && docker build -t dev-portfolio-fe . \
+  && docker rm -f dev-portfolio-fe \
+  && docker run -d --name dev-portfolio-fe -p 60022:8000 --restart unless-stopped dev-portfolio-fe'
 ```
 
-### 3. 허브 페이지 갱신 (cron으로 자동 실행됨)
+### 3. 허브 페이지 갱신 (son-wtr cron이 매일 11:00 자동 실행)
 
 ```bash
-python3 generate-hub.py   # → fe/hub.html, 로그: hub-cron.log
+python3 generate-hub.py   # → fe/index.html + fe/hub.html 생성 후 docker 재빌드
 ```
 
 ## 인프라
 
 | 항목 | 내용 |
 |------|------|
+| 배포 머신 | son-wtr (192.168.1.121, ssh `aoo`) — nginx + 모든 서비스 컨테이너 |
 | 컨테이너 | `dev-portfolio-fe` (python:3.12-alpine), 내부 8000 → 호스트 60022 |
-| 도메인 | `dev.ericfromkorea.com` (HTTPS, Let's Encrypt) |
-| nginx | 80 → HTTPS 리다이렉트, 443 → `localhost:60022` |
+| 도메인 | `dev.ericfromkorea.com`, `hub.ericfromkorea.com` — 같은 컨테이너로 프록시 |
+| 루트 라우팅 | 서버가 Host 헤더로 분기: `dev.*`의 `/` → portfolio.html, 그 외 → index.html(허브) |
+| nginx | son-wtr의 `/etc/nginx/sites-available/` (80 → HTTPS 리다이렉트, 443 → `localhost:60022`) |
 | 에디터 인증 | `.editor-secret`의 `EDITOR_PASSWORD` (git 제외) |
 
 ## 주요 경로 요약
