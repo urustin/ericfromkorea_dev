@@ -105,6 +105,11 @@ def norm(blocks, slug, counter):
             node["has_col_header"] = body.get("has_column_header", False)
         if t == "table_row":
             node["cells"] = [spans(c) for c in body.get("cells", [])]
+        if t == "bookmark":  # 북마크는 url과 캡션을 보존한다
+            node["url"] = body.get("url", "")
+            cap = spans(body.get("caption"))
+            if cap:
+                node["caption"] = cap
         if b.get("has_children") and t != "table_row":
             node["children"] = norm(children(b["id"]), slug, counter)
         # drop empty paragraphs (Notion spacing) unless they carry children

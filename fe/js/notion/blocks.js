@@ -1,8 +1,15 @@
 // Single Notion block -> DOM node. `kids` renders a child block array.
 import { el } from '../dom.js';
-import { richText } from './richtext.js';
+import { richText, colorStyle } from './richtext.js';
 
 const HEADING = { heading_1: 'h2', heading_2: 'h3', heading_3: 'h4' };
+
+// 블록 자체 색상(글자색/배경색)을 요소 스타일로 적용
+function tinted(node, color) {
+  const style = colorStyle(color);
+  if (node && style) Object.assign(node.style, style);
+  return node;
+}
 
 function bgClass(color) {
   return color && color.endsWith('_background')
@@ -11,9 +18,9 @@ function bgClass(color) {
 
 export function renderBlock(b, kids) {
   const t = b.type;
-  if (HEADING[t]) return el(HEADING[t], { class: 'nb-h' }, richText(b.rich));
+  if (HEADING[t]) return tinted(el(HEADING[t], { class: 'nb-h' }, richText(b.rich)), b.color);
 
-  if (t === 'paragraph') return el('p', {}, richText(b.rich));
+  if (t === 'paragraph') return tinted(el('p', {}, richText(b.rich)), b.color);
 
   if (t === 'quote')
     return el('blockquote', { class: 'nb-quote' }, richText(b.rich),
@@ -55,7 +62,12 @@ export function renderBlock(b, kids) {
 
   if (t === 'table') return renderTable(b);
 
-  if (t === 'bookmark') return null;
+  if (t === 'bookmark')
+    return b.url ? el('a', { class: 'nb-bookmark', href: b.url, target: '_blank', rel: 'noopener' },
+      el('span', { class: 'nb-bookmark__ic' }, '🔖'),
+      el('span', { class: 'nb-bookmark__url' }, b.url),
+      b.caption && b.caption.length
+        ? el('span', { class: 'nb-bookmark__cap' }, richText(b.caption)) : null) : null;
   return null;
 }
 

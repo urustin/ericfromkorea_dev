@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!-- 에디터 직렬화 round-trip 테스트 (배포 제외, 로컬 검증용) -->
+<html><head><meta charset="utf-8"></head><body>
+<div id="out">RUNNING</div>
+<script type="module">
+import { makeBlockEl, blockToData } from './js/editor/blockedit/factory.js';
+
+// 키 순서 무관 비교를 위한 정규화 직렬화
+const canon = (v) => {
+  if (Array.isArray(v)) return '[' + v.map(canon).join(',') + ']';
+  if (v && typeof v === 'object')
+    return '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + canon(v[k])).join(',') + '}';
+  return JSON.stringify(v);
+};
+
+const FIXTURE = [
+  { type: 'paragraph', rich: [
+    { text: '굵게', bold: true }, { text: '빨강', color: 'red' },
+    { text: '배경', color: 'blue_background' }, { text: '링크', href: 'https://a.b' },
+    { text: '코드', code: true }, { text: '평문' }] },
+  { type: 'heading_2', rich: [{ text: '제목' }], color: 'green' },
+  { type: 'bulleted_list_item', rich: [{ text: '항목' }],
+    children: [{ type: 'paragraph', rich: [{ text: '하위' }] }] },
+  { type: 'numbered_list_item', rich: [{ text: '번호' }] },
+  { type: 'to_do', checked: true, rich: [{ text: '할일' }] },
+  { type: 'toggle', rich: [{ text: '토글제목', italic: true }],
+    children: [{ type: 'paragraph', rich: [{ text: '토글내용' }] },
+               { type: 'bulleted_list_item', rich: [{ text: '토글목록' }] }] },
+  { type: 'callout', icon: '🔥', rich: [{ text: '콜아웃' }], color: 'yellow_background' },
+  { type: 'code', lang: 'python', rich: [{ text: 'print(1)' }] },
+  { type: 'divider' },
+  { type: 'image', src: 'assets/x.png', caption: [{ text: '캡션', bold: true }] },
+  { type: 'quote', rich: [{ text: '인용문' }],
+    children: [{ type: 'paragraph', rich: [{ text: '인용하위' }] }] },
+  { type: 'table', has_col_header: true, children: [
+    { type: 'table_row', cells: [[{ text: 'A', bold: true }], [{ text: 'B' }]] },
+    { type: 'table_row', cells: [[{ text: '1', color: 'red' }], [{ text: '2' }]] }] },
+  { type: 'column_list', children: [
+    { type: 'column', children: [{ type: 'paragraph', rich: [{ text: '왼쪽' }] }] },
+    { type: 'column', children: [{ type: 'to_do', checked: false, rich: [{ text: '오른쪽' }] }] }] },
+  { type: 'bookmark', url: 'https://example.com' },
+  { type: 'embed', url: 'https://x.y', extra: 1 }, // 미지원 타입 → 원본 보존 확인
+];
+
+const surface = document.createElement('div');
+document.body.append(surface);
+FIXTURE.forEach((b) => surface.append(makeBlockEl(b)));
+const back = [...surface.querySelectorAll(':scope > .ne-block')].map(blockToData);
+
+const fails = [];
+FIXTURE.forEach((b, i) => {
+  if (canon(b) !== canon(back[i]))
+    fails.push(`#${i} ${b.type}\n  기대: ${canon(b)}\n  실제: ${canon(back[i])}`);
+});
+document.getElementById('out').textContent =
+  fails.length ? 'FAIL\n' + fails.join('\n') : `PASS ${FIXTURE.length} blocks`;
+</script>
+</body></html>

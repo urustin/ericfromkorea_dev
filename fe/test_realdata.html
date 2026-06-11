@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!-- 실제 details/*.json 전체 round-trip 무손실 검증 (배포 제외, 로컬 검증용) -->
+<html><head><meta charset="utf-8"></head><body>
+<div id="out">RUNNING</div>
+<script type="module">
+import { makeBlockEl, blockToData } from './js/editor/blockedit/factory.js';
+
+// 의미 동등 정규화: 인접 동일서식 span 병합(<br> 분할 흡수), 키 정렬
+function normSpans(spans) {
+  const out = [];
+  for (const s of spans || []) {
+    const prev = out[out.length - 1];
+    const marks = (x) => { const { text, ...m } = x; return JSON.stringify(Object.entries(m).sort()); };
+    if (prev && marks(prev) === marks(s)) prev.text += s.text;
+    else out.push({ ...s });
+  }
+  return out;
+}
+function normBlock(b) {
+  const c = { ...b };
+  if (c.rich) c.rich = normSpans(c.rich);
+  if (c.caption) c.caption = normSpans(c.caption);
+  if (c.caption && !c.caption.length) delete c.caption; // 빈 캡션은 생략과 동일
+  if (c.children && !c.children.length) delete c.children;
+  if (c.cells) c.cells = c.cells.map(normSpans);
+  if (c.children) c.children = c.children.map(normBlock);
+  return c;
+}
+const canon = (v) => {
+  if (Array.isArray(v)) return '[' + v.map(canon).join(',') + ']';
+  if (v && typeof v === 'object')
+    return '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + canon(v[k])).join(',') + '}';
+  return JSON.stringify(v);
+};
+
+const idx = await (await fetch('js/data/projects.json')).json();
+const slugs = idx.map((p) => p.id || p.slug).filter(Boolean);
+const lines = [];
+for (const slug of slugs) {
+  const res = await fetch(`js/data/details/${slug}.json`);
+  if (!res.ok) { lines.push(`${slug}: (no file)`); continue; }
+  const blocks = await res.json();
+  const surface = document.createElement('div');
+  document.body.append(surface);
+  blocks.forEach((b) => surface.append(makeBlockEl(b)));
+  const back = [...surface.querySelectorAll(':scope > .ne-block')].map(blockToData);
+  surface.remove();
+  let bad = 0;
+  blocks.forEach((b, i) => {
+    if (canon(normBlock(b)) !== canon(normBlock(back[i]))) {
+      bad += 1;
+      if (bad === 1) lines.push(`  diff #${i} ${b.type}\n  기대: ${canon(normBlock(b)).slice(0, 300)}\n  실제: ${canon(normBlock(back[i])).slice(0, 300)}`);
+    }
+  });
+  lines.push(`${slug}: ${blocks.length} blocks, diff ${bad}`);
+}
+document.getElementById('out').textContent = lines.join('\n');
+</script>
+</body></html>

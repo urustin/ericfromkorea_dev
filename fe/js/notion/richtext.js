@@ -5,7 +5,7 @@ const WRAP = {
   bold: 'strong', italic: 'em', strikethrough: 's', underline: 'u', code: 'code',
 };
 
-function colorStyle(color) {
+export function colorStyle(color) {
   if (!color) return null;
   if (color.endsWith('_background')) {
     const c = color.replace('_background', '');

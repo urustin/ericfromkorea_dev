@@ -9,14 +9,21 @@ export const TYPES = [
   { type: 'bulleted_list_item', label: '글머리 목록', icon: '•', cmd: 'bullet ul list 목록 글머리', md: '-' },
   { type: 'numbered_list_item', label: '번호 목록', icon: '1.', cmd: 'number ol 번호 목록', md: '1.' },
   { type: 'to_do', label: '할 일 목록', icon: '☑', cmd: 'todo check 할일 체크 태스크', md: '[]' },
+  { type: 'toggle', label: '토글', icon: '▸', cmd: 'toggle 토글 접기', md: null },
   { type: 'quote', label: '인용', icon: '❝', cmd: 'quote 인용', md: '>' },
   { type: 'callout', label: '콜아웃', icon: '💡', cmd: 'callout 콜아웃 강조', md: null },
   { type: 'code', label: '코드', icon: '</>', cmd: 'code 코드', md: '```' },
   { type: 'divider', label: '구분선', icon: '—', cmd: 'divider hr 구분선', md: '---' },
   { type: 'image', label: '이미지', icon: '🖼', cmd: 'image 이미지 사진 그림', md: null },
+  { type: 'table', label: '표', icon: '▦', cmd: 'table 표 테이블', md: null },
+  { type: 'column_list', label: '2단 컬럼', icon: '⫼', cmd: 'column 컬럼 단 분할', md: null },
+  { type: 'bookmark', label: '북마크', icon: '🔖', cmd: 'bookmark 북마크 링크 url', md: null },
 ];
 export const EDITSET = new Set(TYPES.map((t) => t.type));
 export const byMd = (s) => TYPES.find((t) => t.md === s);
+
+// Notion color palette (text + background variants share these names).
+export const COLORS = ['gray', 'brown', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'red'];
 
 const TAG = { bold: 'strong', italic: 'em', strikethrough: 's', underline: 'u', code: 'code' };
 
@@ -30,6 +37,11 @@ export function spansToHtml(spans) {
   return spans.map((s) => {
     let t = esc(s.text).replace(/\n/g, '<br>');
     for (const k in TAG) if (s[k]) t = `<${TAG[k]}>${t}</${TAG[k]}>`;
+    if (s.color) {
+      const attr = s.color.endsWith('_background')
+        ? `data-bg="${s.color.replace('_background', '')}"` : `data-c="${s.color}"`;
+      t = `<span ${attr}>${t}</span>`;
+    }
     if (s.href) t = `<a href="${esc(s.href).replace(/"/g, '&quot;')}">${t}</a>`;
     return t;
   }).join('');
@@ -48,6 +60,8 @@ function walk(node, marks, out) {
       if (tag === 's' || tag === 'strike' || tag === 'del') m.strikethrough = true;
       if (tag === 'u') m.underline = true;
       if (tag === 'code') m.code = true;
+      if (ch.dataset && ch.dataset.c) m.color = ch.dataset.c;
+      if (ch.dataset && ch.dataset.bg) m.color = `${ch.dataset.bg}_background`;
       if (tag === 'a') {
         const sub = []; walk(ch, m, sub);
         const href = ch.getAttribute('href'); sub.forEach((x) => { x.href = href; });

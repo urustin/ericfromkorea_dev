@@ -6,6 +6,7 @@ import { createToolbar } from './toolbar.js';
 import { openBlockMenu } from './menu.js';
 import { onKeydown } from './keys.js';
 import { onInput } from './input.js';
+import { enableDnd } from './dnd.js';
 import { placeCaret } from './caret.js';
 import { editActions } from '../bar.js';
 import { saveDetail, uploadImage, createPage } from '../api.js';
@@ -55,6 +56,7 @@ export function mountBlockEditor(slug, blocks) {
     else { const c = api.convert(block, t.type); if (c) placeCaret(c, true); }
   }
 
+  enableDnd(surface);
   surface.addEventListener('keydown', (e) => onKeydown(e, api));
   surface.addEventListener('input', (e) => onInput(e, api));
   surface.addEventListener('change', async (e) => {
@@ -78,7 +80,7 @@ export function mountBlockEditor(slug, blocks) {
   document.querySelector('#app').replaceChildren(
     el('a', { class: 'back', href: `project.html?id=${slug}` }, '← 보기로'),
     el('h1', {}, '본문 편집'),
-    el('p', { class: 'muted ne-hint' }, "빈 줄에서 ‘/’ 입력 → 블록 메뉴 · 마크다운(#, -, 1., >, ``` , ---) 지원"),
+    el('p', { class: 'muted ne-hint' }, "‘/’ 블록 메뉴 · 마크다운(#, -, 1., >, ```, ---) · Tab 들여쓰기 · ⠿ 드래그 정렬 · 선택 후 색상(A▾)"),
     surface);
   document.body.append(api.slash.el, toolbar.el);
 

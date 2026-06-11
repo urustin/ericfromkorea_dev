@@ -77,3 +77,10 @@
 .nb-table { border-collapse: collapse; font-size: 0.92rem; }
 .nb-table th, .nb-table td { border: 1px solid var(--line-strong); padding: 8px 12px; text-align: left; }
 .nb-table th { background: var(--bg-soft); font-weight: 600; }
+
+/* 북마크 카드 */
+.nb-bookmark { display:flex; gap:8px; align-items:baseline; border:1px solid var(--line);
+  border-radius:var(--radius); padding:10px 12px; text-decoration:none; color:inherit; }
+.nb-bookmark:hover { background: var(--hover); }
+.nb-bookmark__url { color: var(--t-blue); font-size:0.88rem; word-break:break-all; }
+.nb-bookmark__cap { color: var(--ink-soft); font-size:0.85rem; }

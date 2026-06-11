@@ -5,3 +5,4 @@ Dockerfile
 **/__pycache__
 __test.html
 __edtest.html
+test_*.html

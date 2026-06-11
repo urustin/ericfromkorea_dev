@@ -1,0 +1,7 @@
+<!DOCTYPE html><html><body><div id="out">RUNNING</div>
+<script type="module">
+try {
+  await import('./js/editor/blockedit/editor.js');
+  document.getElementById('out').textContent = 'IMPORTS OK';
+} catch (e) { document.getElementById('out').textContent = 'IMPORT FAIL: ' + e.message; }
+</script></body></html>
