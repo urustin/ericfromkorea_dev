@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DNF LoRA — Cross-base Inference Matrix</title>
+<meta name="description" content="5 LoRA × 6 Base × 5 Prompt = 150 images. SDXL 계열 모델 계통도와 cross-base inference 호환성 정량 비교.">
+<meta property="og:title" content="DNF LoRA Cross-base Inference Matrix">
+<meta property="og:description" content="다른 base 에 학습한 LoRA 들을 다른 base 에 끼워 넣었을 때 어떻게 작동하는가 — 5×6 매트릭스 정량 비교">
+<style>
+  :root {
+    --bg: #0f0f10; --panel: #1a1a1c; --panel2: #242427; --border: #303033;
+    --text: #e8e8e8; --muted: #888; --accent: #5b9dd9; --hover: #2f2f2f;
+    --tree-sdxl: #4a90e2; --tree-illus: #e2904a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.55;
+  }
+  .container { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
+  h1 { font-size: 28px; margin-bottom: 8px; letter-spacing: -0.5px; }
+  h2 { font-size: 20px; margin: 32px 0 12px; color: var(--accent); }
+  h3 { font-size: 16px; margin: 16px 0 8px; color: #b8b8b8; }
+  p { color: #c8c8c8; margin-bottom: 12px; font-size: 14.5px; }
+  .sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+  code { background: var(--panel2); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  section { background: var(--panel); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+
+  /* Family tree diagram */
+  .tree { font-family: "SF Mono", "Menlo", monospace; font-size: 13px; line-height: 1.7;
+          background: var(--panel2); padding: 16px; border-radius: 8px; overflow-x: auto; }
+  .tree .sdxl { color: var(--tree-sdxl); font-weight: 600; }
+  .tree .illus { color: var(--tree-illus); font-weight: 600; }
+  .tree .vpred { color: #c66; }
+
+  /* Setup table */
+  table.setup { width: 100%; border-collapse: collapse; margin: 8px 0; }
+  table.setup th, table.setup td {
+    padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  table.setup th { background: var(--panel2); color: var(--muted); font-weight: 500; }
+
+  /* Findings */
+  ul.findings { list-style: none; padding-left: 0; }
+  ul.findings li {
+    padding: 10px 14px; background: var(--panel2); border-radius: 8px; margin-bottom: 8px;
+    border-left: 3px solid var(--accent);
+  }
+  ul.findings li strong { color: var(--accent); }
+  ul.findings li.fail { border-left-color: #c66; }
+  ul.findings li.fail strong { color: #c66; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab {
+    background: var(--panel2); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 18px; cursor: pointer; border-radius: 6px;
+    font-size: 14px; font-family: inherit;
+  }
+  .tab:hover { background: var(--hover); }
+  .tab.active { background: var(--accent); color: white; font-weight: 600; border-color: var(--accent); }
+
+  /* Matrix table */
+  table.matrix { border-collapse: collapse; width: 100%; }
+  table.matrix th, table.matrix td {
+    border: 1px solid var(--border); padding: 4px; text-align: center;
+    background: var(--panel2);
+  }
+  table.matrix th {
+    background: var(--panel); color: var(--text); font-size: 12px;
+    font-weight: 500; padding: 10px 6px;
+  }
+  table.matrix th.col-sdxl { border-top: 3px solid var(--tree-sdxl); }
+  table.matrix th.col-illus { border-top: 3px solid var(--tree-illus); }
+  table.matrix th.col-vpred { border-top: 3px solid #c66; }
+  table.matrix th.row-label {
+    writing-mode: vertical-rl; text-orientation: mixed; min-width: 50px;
+    padding: 6px 10px;
+  }
+  table.matrix th.row-sdxl { border-left: 3px solid var(--tree-sdxl); }
+  table.matrix th.row-illus { border-left: 3px solid var(--tree-illus); }
+  table.matrix img {
+    width: 100%; max-width: 200px; height: auto; display: block;
+    cursor: pointer; transition: transform 0.15s; border-radius: 4px;
+  }
+  table.matrix img:hover { transform: scale(1.03); outline: 2px solid var(--accent); }
+  td.native { background: rgba(91, 157, 217, 0.08); }
+
+  .legend { display: flex; gap: 16px; margin-top: 12px; font-size: 13px; flex-wrap: wrap; }
+  .legend span { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  .legend i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  footer { text-align: center; padding: 32px 0 16px; color: var(--muted); font-size: 13px; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* Lightbox */
+  .lb {
+    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.94); z-index: 100; justify-content: center; align-items: center;
+    padding: 24px;
+  }
+  .lb.show { display: flex; flex-direction: column; }
+  .lb img { max-width: 95vw; max-height: 86vh; object-fit: contain; }
+  .lb .meta { color: var(--text); margin-top: 12px; font-size: 14px; text-align: center; }
+  .lb .close {
+    position: absolute; top: 16px; right: 24px; color: white; font-size: 32px;
+    cursor: pointer; background: none; border: none;
+  }
+  .lb .nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.1); color: white; border: none;
+    width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 24px;
+  }
+  .lb .nav:hover { background: rgba(255,255,255,0.2); }
+  .lb .nav.prev { left: 16px; } .lb .nav.next { right: 16px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>DNF LoRA — Cross-base Inference Matrix</h1>
+  <p class="sub">5 LoRA × 6 Base × 5 Prompt = 150 images · 다른 base 에 학습한 LoRA 들이 다른 base 에서 어떻게 작동하는가</p>
+</header>
+
+<section>
+  <h2>실험 개요</h2>
+  <p>DNF 공식 일러스트 522장으로 <strong>5개의 다른 base 모델</strong>에 LoRA 를 각각 학습하고, 학습된 5 LoRA 를 <strong>6개의 base 모델</strong>(학습 5종 + V-Pred 1종)에 끼워 넣어 추론 결과를 비교. 같은 계통 (family tree) 내에서 cross-base inference 가 작동하는지, 어떤 경계에서 깨지는지 정량 확인.</p>
+
+  <h3>SDXL 계열 모델 계통도</h3>
+  <div class="tree">
+<span class="sdxl">SDXL 1.0 base</span>  ← stabilityai/stable-diffusion-xl-base-1.0
+├── <span class="sdxl">Animagine XL 3.1</span>  (SDXL 직계 fine-tune)
+└── <span class="illus">Illustrious XL v0.1</span>  (SDXL 직계 fine-tune, Danbooru 학습)
+    ├── <span class="illus">NoobAI-XL v1.1 epsilon</span>  (Illustrious 파생)
+    │   └── <span class="vpred">NoobAI-XL V-Pred v1</span>  (같은 v1.1 에서 prediction_type 재학습)
+    └── <span class="illus">WAI-Illustrious v16</span>  (Illustrious 파생)
+  </div>
+</section>
+
+<section>
+  <h2>5 LoRA — 각각 다른 base 에 학습</h2>
+  <p>같은 데이터셋(522장 + ssw_dnf 트리거 + 동일 캡션) · 같은 하이퍼파라미터(rank 32, α 16, LR 1e-4, 3000 step, AdamW, bf16) · seed 42 · 학습은 RTX 5070 Ti (16GB) 에서 각 4.5시간, 총 22시간.</p>
+  <table class="setup">
+    <tr><th>LoRA 라벨</th><th>학습 베이스 모델</th><th>계통</th><th>prediction_type</th></tr>
+    <tr><td>L_sdxl</td><td>SDXL 1.0 base</td><td><span style="color:var(--tree-sdxl)">SDXL 직계</span></td><td>epsilon</td></tr>
+    <tr><td>L_animagine</td><td>Animagine XL 3.1</td><td><span style="color:var(--tree-sdxl)">SDXL 직계</span></td><td>epsilon</td></tr>
+    <tr><td>L_illustrious</td><td>Illustrious XL v0.1</td><td><span style="color:var(--tree-illus)">Illustrious 트리</span></td><td>epsilon</td></tr>
+    <tr><td>L_noobai_eps</td><td>NoobAI-XL v1.1 (epsilon)</td><td><span style="color:var(--tree-illus)">Illustrious 트리</span></td><td>epsilon</td></tr>
+    <tr><td>L_wai</td><td>WAI-Illustrious v16</td><td><span style="color:var(--tree-illus)">Illustrious 트리</span></td><td>epsilon</td></tr>
+  </table>
+  <p style="margin-top:12px"><strong>추론은 6개 base 에서</strong>: 위 5개 + NoobAI V-Pred v1 (prediction_type 호환성 추가 검증용).</p>
+</section>
+
+<section>
+  <h2>핵심 발견</h2>
+  <ul class="findings">
+    <li class="fail"><strong>NoobAI V-Pred 열 100% 실패</strong>: epsilon 으로 학습한 LoRA 5개 전부 v_prediction base 에서 검은색/노이즈로 깨짐. <strong>prediction_type 변환은 LoRA 호환의 절대 경계.</strong></li>
+    <li><strong>Illustrious 트리 내 cross-base 호환 양호</strong>: Illustrious / NoobAI eps / WAI 끼리 LoRA 교체해도 자연스러운 스타일 유지. 운영 효율 관점에서 매우 유용.</li>
+    <li><strong>Animagine 의 관대함</strong>: 어떤 LoRA 를 적용해도 받아들임. SDXL 직계 fine-tune 의 특성으로 추정.</li>
+    <li><strong>계통 경계는 부분 호환</strong>: SDXL 직계 ↔ Illustrious 트리 — 그림은 나오지만 스타일이 변함. 두 계통이 SDXL 1.0 공통 조상이라 부분 호환되는 것으로 해석.</li>
+    <li><strong>Metric 의 한계</strong>: CLIP/DINO 단독으로는 V-Pred 깨짐을 약하게만 잡음 (CLIP Δ 0.011, DINO 는 오히려 V-Pred 가 살짝 높음). 정성+정량 두 트랙 병행 필요.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>매트릭스 보는 법</h2>
+  <p><strong>행 = LoRA 학습 베이스</strong> (5종) · <strong>열 = 추론 베이스</strong> (6종). 한 셀 = 해당 LoRA 를 해당 base 에 끼워 넣고 동일 프롬프트·동일 seed 로 추론한 결과.</p>
+  <p><strong>대각선 셀</strong>(L_X × B_X) = LoRA 가 자기 학습 base 로 추론 = <em>native</em>. 그 외 = <em>cross-base</em>.</p>
+  <div class="legend">
+    <span><i style="background:var(--tree-sdxl)"></i> SDXL 직계</span>
+    <span><i style="background:var(--tree-illus)"></i> Illustrious 트리</span>
+    <span><i style="background:#c66"></i> NoobAI V-Pred (prediction_type 다름)</span>
+    <span><i style="background:rgba(91,157,217,0.18); border:1px solid var(--accent);"></i> native (대각선)</span>
+  </div>
+</section>
+
+<section>
+  <h2>매트릭스</h2>
+  <p style="color:var(--muted); margin-bottom:16px;">상단 탭으로 프롬프트 전환 · 썸네일 클릭 시 원본 1024×1024 라이트박스 · ← → 키로 150장 순회</p>
+  <div class="tabs" id="tabs"></div>
+  <div id="panels"></div>
+</section>
+
+<footer>
+  <p>본 프로젝트는 넥슨 [플랫폼본부] AI 리서치 사이언티스트 포트폴리오의 일부 — 더 자세한 내용은
+    <a href="https://ericfromkorea.notion.site/_-Fine-tuning-316d7efd824b802cb18ee0bb3a79bb57">노션 포트폴리오 페이지</a> 참조</p>
+  <p style="margin-top:8px">— Eric (<a href="https://ericfromkorea.com">ericfromkorea.com</a>) ·
+    <a href="https://wandb.ai/ericfromkorea-ssw/dnf_lora_crossbase">wandb dashboard</a></p>
+</footer>
+
+</div>
+
+<div class="lb" id="lb">
+  <button class="close" onclick="closeLb()">×</button>
+  <button class="nav prev" onclick="navLb(-1)">‹</button>
+  <button class="nav next" onclick="navLb(1)">›</button>
+  <img id="lbImg" src="">
+  <div class="meta" id="lbMeta"></div>
+</div>
+
+<script>
+const LORAS = [
+  ["L_sdxl",        "SDXL 1.0",   "sdxl"],
+  ["L_animagine",   "Animagine",  "sdxl"],
+  ["L_illustrious", "Illustrious","illus"],
+  ["L_noobai_eps",  "NoobAI eps", "illus"],
+  ["L_wai",         "WAI",        "illus"],
+];
+const BASES = [
+  ["B_sdxl",        "SDXL 1.0",     "sdxl"],
+  ["B_animagine",   "Animagine",    "sdxl"],
+  ["B_illustrious", "Illustrious",  "illus"],
+  ["B_noobai_eps",  "NoobAI eps",   "illus"],
+  ["B_wai",         "WAI",          "illus"],
+  ["B_noobai_vp",   "NoobAI V-Pred","vpred"],
+];
+const PROMPTS = [[1,"귀검사(여)"],[2,"오버마인드"],[3,"달비"],[4,"커맨더"],[5,"베리아스"]];
+
+const allImages = [];
+PROMPTS.forEach(([p, plabel]) => {
+  LORAS.forEach(([ldir, llabel]) => {
+    BASES.forEach(([bdir, blabel]) => {
+      allImages.push({
+        src: `${ldir}/${bdir}/p${p}.png`,
+        meta: `LoRA: ${llabel} (행)  ×  Base: ${blabel} (열)  ·  ${plabel} (p${p})`,
+      });
+    });
+  });
+});
+
+const tabsEl = document.getElementById("tabs");
+const panelsEl = document.getElementById("panels");
+PROMPTS.forEach(([p, plabel], idx) => {
+  const tab = document.createElement("button");
+  tab.className = "tab" + (idx === 0 ? " active" : "");
+  tab.textContent = `${p}. ${plabel}`;
+  tab.onclick = () => switchTab(idx);
+  tabsEl.appendChild(tab);
+
+  const panel = document.createElement("div");
+  panel.className = "panel" + (idx === 0 ? " active" : "");
+  panel.id = `panel-${idx}`;
+
+  const table = document.createElement("table");
+  table.className = "matrix";
+
+  const thead = document.createElement("tr");
+  thead.innerHTML = "<th></th>" + BASES.map(b => `<th class="col-${b[2]}">${b[1]}</th>`).join("");
+  table.appendChild(thead);
+
+  LORAS.forEach(([ldir, llabel, ltree]) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<th class="row-label row-${ltree}">${llabel}</th>` +
+      BASES.map(([bdir, _, btree]) => {
+        const src = `${ldir}/${bdir}/p${p}.png`;
+        const idx2 = allImages.findIndex(x => x.src === src);
+        const isNative = ldir.replace("L_", "B_") === bdir;
+        return `<td class="${isNative ? "native" : ""}"><img src="${src}" loading="lazy" onclick="openLb(${idx2})"></td>`;
+      }).join("");
+    table.appendChild(tr);
+  });
+  panel.appendChild(table);
+  panelsEl.appendChild(panel);
+});
+
+function switchTab(idx) {
+  document.querySelectorAll(".tab").forEach((t, i) => t.classList.toggle("active", i === idx));
+  document.querySelectorAll(".panel").forEach((p, i) => p.classList.toggle("active", i === idx));
+}
+
+let currentIdx = -1;
+function openLb(idx) {
+  currentIdx = idx;
+  document.getElementById("lbImg").src = allImages[idx].src;
+  document.getElementById("lbMeta").textContent = allImages[idx].meta;
+  document.getElementById("lb").classList.add("show");
+}
+function closeLb() { document.getElementById("lb").classList.remove("show"); currentIdx = -1; }
+function navLb(d) {
+  if (currentIdx < 0) return;
+  currentIdx = (currentIdx + d + allImages.length) % allImages.length;
+  openLb(currentIdx);
+}
+document.addEventListener("keydown", e => {
+  if (currentIdx < 0) return;
+  if (e.key === "Escape") closeLb();
+  else if (e.key === "ArrowLeft") navLb(-1);
+  else if (e.key === "ArrowRight") navLb(1);
+});
+document.getElementById("lb").addEventListener("click", e => {
+  if (e.target.id === "lb") closeLb();
+});
+</script>
+</body>
+</html>
