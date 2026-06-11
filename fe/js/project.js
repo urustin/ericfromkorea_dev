@@ -38,7 +38,7 @@ async function mountBody(slug) {
   mountBar(async () => {
     const { editDetail } = await import('./editor/detailEditor.js');
     editDetail(slug, blocks);
-  });
+  }, { sync: sub ? sub.parent : slug });
 }
 
 const projects = await getProjects();

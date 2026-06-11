@@ -19,4 +19,5 @@ SLUGS = {
     "java-openai":         "e3e587d8-7172-4137-b106-1543bae69ebc",
     "electronjs":          "87875c14-0767-4fe8-9910-7b4b570eb47c",
     "gmaps-distance":      "b878fbaa-abff-48b6-940f-31b3a9ed73a0",
+    "profile-body":        "875bf305-254d-4271-a9ec-cca18e72c646",
 }

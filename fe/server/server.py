@@ -4,6 +4,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 import auth
 import store
+import sync
 
 APP = os.environ.get("APP_ROOT", "/app")
 MAX_BODY = 25 * 1024 * 1024
@@ -45,6 +46,8 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/api/me":
             return self._json(200 if self._authed() else 401, {"authed": self._authed()})
+        if self.path == "/api/sync/status":
+            return self._json(200, sync.status())
         # dev.* 도메인의 루트(/)는 포트폴리오를 바로 보여준다 (hub.* 는 허브 유지)
         host = self.headers.get("Host", "")
         if self.path == "/" and host.startswith("dev."):
@@ -64,6 +67,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self._guard(self._new_page)
         if self.path == "/api/subpage":
             return self._guard(self._new_subpage)
+        if self.path == "/api/sync":
+            return self._guard(self._sync)
         if self.path.split("?")[0] == "/api/upload":
             return self._guard(self._upload)
         return self._json(404, {"error": "not found"})
@@ -106,6 +111,10 @@ class Handler(SimpleHTTPRequestHandler):
     def _new_page(self):
         name = json.loads(self._read() or b"{}").get("name", "")
         self._json(200, store.create_page(name))
+
+    def _sync(self):
+        slug = json.loads(self._read() or b"{}").get("slug") or None
+        self._json(200, {"started": sync.start(slug)})
 
     def _new_subpage(self):
         body = json.loads(self._read() or b"{}")

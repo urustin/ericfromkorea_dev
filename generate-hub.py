@@ -114,6 +114,7 @@ def rebuild_docker():
         "--restart", "unless-stopped", "-p", "60022:8000",
         "--user", "1000:1000",
         "-v", f"{FE_DIR}:/app",
+        "-v", "/home/son/prj/dev_portfolio/extract:/extract:ro",
         "--env-file", "/home/son/prj/dev_portfolio/.editor-secret",
         "dev-portfolio-fe",
     ], check=True)

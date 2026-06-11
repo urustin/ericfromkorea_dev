@@ -36,4 +36,4 @@ mount('#app', hero(P), el('hr', { class: 'divider' }), projectsSection(projects)
 mountBar(async () => {
   const { editProfile } = await import('./editor/profileEditor.js');
   editProfile(P, body);
-});
+}, { sync: 'profile-body' });

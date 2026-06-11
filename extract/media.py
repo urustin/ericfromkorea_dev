@@ -1,8 +1,8 @@
 """미디어 블록 처리 — rich text 스팬, 이미지 다운로드, 동영상/임베드 정규화."""
-import urllib.request
+import os, urllib.request
 from pathlib import Path
 
-FE = Path("/home/son/prj/dev_portfolio/fe")
+FE = Path(os.environ.get("FE_DIR", "/home/son/prj/dev_portfolio/fe"))
 IMGDIR = FE / "assets" / "img" / "projects"
 VIDDIR = FE / "assets" / "video"
 EXTS = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".mp4", ".webm", ".mov")

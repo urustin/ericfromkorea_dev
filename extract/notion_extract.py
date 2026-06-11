@@ -6,7 +6,7 @@ from slugs import SLUGS  # {slug: page_id}
 from media import spans, dl_image, media_node
 
 TOKEN = os.environ["NOTION_TOKEN"]
-FE = Path("/home/son/prj/dev_portfolio/fe")
+FE = Path(os.environ.get("FE_DIR", "/home/son/prj/dev_portfolio/fe"))
 OUT = FE / "js" / "data" / "details"
 IMGDIR = FE / "assets" / "img" / "projects"
 HDR = {"Authorization": f"Bearer {TOKEN}", "Notion-Version": "2022-06-28"}
@@ -112,6 +112,10 @@ def main():
         if only and slug not in only:
             continue
         blocks = norm(children(pid), slug, [0])
+        if slug == "profile-body":  # 프로필은 Skills부터만 사용 (위는 사이트가 동적 렌더)
+            i = next((i for i, b in enumerate(blocks) if b["type"].startswith("heading")
+                      and "".join(s["text"] for s in b.get("rich", [])).strip() == "Skills"), 0)
+            blocks = blocks[i:]
         (OUT / f"{slug}.json").write_text(
             json.dumps(blocks, ensure_ascii=False, separators=(",", ":")))
         print(f"{slug}: {len(blocks)} blocks", flush=True)
