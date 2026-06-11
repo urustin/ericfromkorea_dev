@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>이미지 크로퍼 (좌표 기반 파일명)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>이미지 크로퍼</h1>
+      <p class="sub">이미지를 올리고 드래그해 영역을 선택하면, 잘라낸 이미지를
+        <code>파일명_posX_posY.png</code> 로 내려받습니다. (posX/posY = 이미지 좌상단 기준 픽셀)</p>
+      <nav class="nav">
+        <span class="nav-cur">크롭</span>
+        <a href="/image-with-red-box/">빨간 박스 그리기 →</a>
+      </nav>
+    </header>
+
+    <!-- 업로드 영역 -->
+    <label id="drop" class="drop" for="file">
+      <input type="file" id="file" accept="image/*" hidden />
+      <span class="drop-msg">클릭하거나 이미지를 끌어다 놓으세요</span>
+    </label>
+
+    <!-- 작업 영역 (이미지 로드 후 표시) -->
+    <section id="stage" class="stage" hidden>
+      <div id="canvasBox" class="canvas-box">
+        <img id="img" alt="업로드한 이미지" />
+        <div id="sel" class="sel" hidden></div>
+      </div>
+      <div class="bar">
+        <span id="info" class="info">영역을 드래그하세요</span>
+        <div class="actions">
+          <button id="reset" type="button" class="btn ghost">다른 이미지</button>
+          <button id="download" type="button" class="btn" disabled>크롭 후 다운로드</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

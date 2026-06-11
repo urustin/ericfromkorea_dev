@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+"""Fetch project page bodies from Notion, normalize blocks, localize images."""
+import json, os, sys, time, urllib.request, urllib.error
+from pathlib import Path
+from slugs import SLUGS  # {slug: page_id}
+
+TOKEN = os.environ["NOTION_TOKEN"]
+FE = Path("/home/son/prj/dev_portfolio/fe")
+OUT = FE / "js" / "data" / "details"
+IMGDIR = FE / "assets" / "img" / "projects"
+HDR = {"Authorization": f"Bearer {TOKEN}", "Notion-Version": "2022-06-28"}
+
+KEEP = {"paragraph", "heading_1", "heading_2", "heading_3", "bulleted_list_item",
+        "numbered_list_item", "to_do", "quote", "callout", "code", "divider",
+        "image", "toggle", "column_list", "column", "table", "table_row", "bookmark"}
+
+
+def api(url):
+    req = urllib.request.Request(url, headers=HDR)
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return json.load(r)
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                time.sleep(1 + attempt); continue
+            raise
+    raise RuntimeError("retries exhausted: " + url)
+
+
+def children(block_id):
+    out, cursor = [], None
+    while True:
+        url = f"https://api.notion.com/v1/blocks/{block_id}/children?page_size=100"
+        if cursor:
+            url += f"&start_cursor={cursor}"
+        data = api(url)
+        out.extend(data["results"])
+        if not data.get("has_more"):
+            break
+        cursor = data["next_cursor"]
+    return out
+
+
+def spans(rich):
+    res = []
+    for r in rich or []:
+        a = r.get("annotations", {})
+        s = {"text": r.get("plain_text", "")}
+        for k in ("bold", "italic", "strikethrough", "underline", "code"):
+            if a.get(k):
+                s[k] = True
+        if a.get("color") and a["color"] != "default":
+            s["color"] = a["color"]
+        if r.get("href"):
+            s["href"] = r["href"]
+        res.append(s)
+    return res
+
+
+def dl_image(block, slug, idx):
+    img = block["image"]
+    url = img.get("file", {}).get("url") or img.get("external", {}).get("url")
+    if not url:
+        return None
+    ext = ".png"
+    for e in (".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"):
+        if e in url.lower().split("?")[0]:
+            ext = e; break
+    d = IMGDIR / slug
+    d.mkdir(parents=True, exist_ok=True)
+    fname = f"{idx:02d}{ext}"
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=60) as r, open(d / fname, "wb") as f:
+        f.write(r.read())
+    cap = spans(img.get("caption"))
+    return {"type": "image", "src": f"assets/img/projects/{slug}/{fname}", "caption": cap}
+
+
+def norm(blocks, slug, counter):
+    out = []
+    for b in blocks:
+        t = b["type"]
+        if t not in KEEP:
+            continue
+        if t == "image":
+            counter[0] += 1
+            node = dl_image(b, slug, counter[0])
+            if node:
+                out.append(node)
+            continue
+        node = {"type": t}
+        body = b.get(t, {})
+        if "rich_text" in body:
+            node["rich"] = spans(body["rich_text"])
+        if body.get("color") and body["color"] != "default":
+            node["color"] = body["color"]
+        if t == "callout" and body.get("icon", {}).get("type") == "emoji":
+            node["icon"] = body["icon"]["emoji"]
+        if t == "code":
+            node["lang"] = body.get("language", "")
+        if t == "to_do":
+            node["checked"] = body.get("checked", False)
+        if t == "table":
+            node["has_col_header"] = body.get("has_column_header", False)
+        if t == "table_row":
+            node["cells"] = [spans(c) for c in body.get("cells", [])]
+        if b.get("has_children") and t != "table_row":
+            node["children"] = norm(children(b["id"]), slug, counter)
+        # drop empty paragraphs (Notion spacing) unless they carry children
+        if t == "paragraph" and not node.get("rich") and not node.get("children"):
+            continue
+        out.append(node)
+    return out
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    for slug, pid in SLUGS.items():
+        blocks = norm(children(pid), slug, [0])
+        (OUT / f"{slug}.json").write_text(
+            json.dumps(blocks, ensure_ascii=False, separators=(",", ":")))
+        print(f"{slug}: {len(blocks)} blocks", flush=True)
+
+
+if __name__ == "__main__":
+    main()

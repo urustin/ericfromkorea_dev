@@ -1,0 +1,73 @@
+/* All Projects database page — Apple style */
+
+.db-header { margin: 40px 0 24px; }
+.db-header h1 { display: flex; align-items: center; gap: 12px; }
+.db-header p { color: var(--ink-soft); margin-top: 8px; }
+
+/* Toolbar */
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+.toolbar input[type="search"] {
+  flex: 1 1 240px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-family: var(--font);
+  background: var(--bg-soft);
+  color: var(--ink);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.toolbar input[type="search"]:focus {
+  outline: none;
+  background: var(--bg);
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+  border-color: var(--accent);
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  cursor: pointer;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  transition: all 0.18s ease;
+}
+.chip:hover { background: var(--hover); }
+.chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.count { color: var(--ink-faint); font-size: 0.85rem; }
+
+/* Table inside a soft rounded card */
+.db-card {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.db-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.db-table thead th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--ink-soft);
+  padding: 13px 16px;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.db-table tbody td { padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.db-table tbody tr:last-child td { border-bottom: none; }
+.db-table tbody tr { transition: background 0.15s; }
+.db-table tbody tr:hover { background: var(--hover); }
+.db-table .c-name { font-weight: 600; min-width: 210px; }
+.row-link { color: var(--ink); }
+.row-link:hover { color: var(--accent-ink); }
+.db-table .c-summary { color: var(--ink-soft); max-width: 320px; }
+.db-table .c-skills { min-width: 170px; }
+.empty { padding: 48px; text-align: center; color: var(--ink-faint); }
+
+@media (max-width: 720px) {
+  .db-table .c-summary, .db-table .c-client, .hide-sm { display: none; }
+}

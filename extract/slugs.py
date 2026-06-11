@@ -1,0 +1,22 @@
+# slug -> Notion page id, mirrors js/data/projects.js order.
+SLUGS = {
+    "text-gen-finetune":   "347d7efd-824b-8045-8dff-ead621f4fed3",
+    "agent-mcp-rag":       "31fd7efd-824b-80ce-bbea-f3183774e214",
+    "closed-network":      "31fd7efd-824b-80bc-85eb-f05d87e3c16d",
+    "linux-xv6":           "31fd7efd-824b-802e-8611-dafd50318bc0",
+    "kafka-k8s":           "31fd7efd-824b-8027-a5f7-d27441f6ca06",
+    "auto-labeling":       "316d7efd-824b-80f5-bf8e-fb4ad3d46026",
+    "dnf-style-finetune":  "316d7efd-824b-802c-b18e-e0bb3a79bb57",
+    "data-rnd":            "1acd7efd-824b-808d-aa2d-e2b61ec8811b",
+    "template-nextjs":     "1acd7efd-824b-8061-bda1-c54f8dab6a2e",
+    "fullstack-cicd":      "1acd7efd-824b-8037-ba89-e85642a9fc46",
+    "react-native-expo":   "165585c7-4f1f-4479-b6ca-56e93e644e8b",
+    "ai-build-tool":       "8fc1b839-b933-42e1-b2cf-36483247b8ac",
+    "data-labeling":       "d58fadcd-0af1-481a-954b-2d825c990389",
+    "vision-spread":       "7bc0b51b-4a80-4c2e-8eba-e9c8ad59cd0f",
+    "nextjs-ssr":          "4809e0a2-3d4b-4110-8a65-4d4551b69e0d",
+    "firebase-storage":    "6d206bc8-0595-49e8-be9d-017c3e1099d9",
+    "java-openai":         "e3e587d8-7172-4137-b106-1543bae69ebc",
+    "electronjs":          "87875c14-0767-4fe8-9910-7b4b570eb47c",
+    "gmaps-distance":      "b878fbaa-abff-48b6-940f-31b3a9ed73a0",
+}

@@ -1,0 +1,79 @@
+/* Notion block rendering + project detail header */
+
+.detail-head { margin: 36px 0 8px; }
+.back {
+  display: inline-block;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin-bottom: 18px;
+}
+.back:hover { color: var(--accent-ink); }
+.detail-head h1 { margin-bottom: 10px; }
+.detail-summary { font-size: 1.15rem; color: var(--ink-soft); margin: 4px 0 22px; }
+
+.props {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 10px 18px;
+  padding: 20px 0 4px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+.prop { display: contents; }
+.prop__k { color: var(--ink-faint); font-size: 0.9rem; }
+.prop__v { font-size: 0.95rem; }
+
+/* Body */
+.notion-body { margin-top: 30px; font-size: 1.06rem; }
+.notion-body > * + * { margin-top: 2px; }
+.notion-body .nb-h { margin: 1.4em 0 0.4em; }
+.notion-body p { margin: 0.5em 0; }
+
+.nb-quote {
+  border-left: 3px solid var(--ink);
+  padding: 2px 0 2px 18px;
+  margin: 14px 0;
+  color: var(--ink);
+}
+
+.nb-callout {
+  display: flex;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  margin: 16px 0;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+}
+.nb-callout[data-c="blue"] { background: var(--b-blue); }
+.nb-callout[data-c="green"] { background: var(--b-green); }
+.nb-callout[data-c="gray"] { background: var(--bg-soft); }
+.nb-callout[data-c="pink"] { background: var(--b-pink); }
+.nb-callout[data-c="yellow"] { background: var(--b-yellow); }
+.nb-callout[data-c="orange"] { background: var(--b-orange); }
+.nb-callout[data-c="purple"] { background: var(--b-purple); }
+.nb-callout[data-c="red"] { background: var(--b-red); }
+.nb-callout[data-c="brown"] { background: var(--b-brown); }
+.nb-callout__icon { font-size: 1.2rem; line-height: 1.5; flex: 0 0 auto; }
+.nb-callout__body { flex: 1; min-width: 0; }
+.nb-callout__body > :first-child { margin-top: 0; }
+
+.nb-figure { margin: 22px 0; }
+.nb-figure img { width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.nb-figure figcaption { text-align: center; color: var(--ink-faint); font-size: 0.85rem; margin-top: 8px; }
+
+.nb-toggle { margin: 8px 0; }
+.nb-toggle summary { cursor: pointer; font-weight: 500; padding: 4px 0; }
+.nb-toggle > :not(summary) { margin-left: 18px; }
+
+.nb-todo { display: flex; align-items: flex-start; gap: 8px; margin: 5px 0; }
+.nb-todo .done { color: var(--ink-faint); text-decoration: line-through; }
+
+.nb-columns { display: flex; gap: 32px; flex-wrap: wrap; margin: 12px 0; }
+.nb-column { flex: 1 1 0; min-width: 220px; }
+
+.nb-table-wrap { overflow-x: auto; margin: 16px 0; }
+.nb-table { border-collapse: collapse; font-size: 0.92rem; }
+.nb-table th, .nb-table td { border: 1px solid var(--line-strong); padding: 8px 12px; text-align: left; }
+.nb-table th { background: var(--bg-soft); font-weight: 600; }

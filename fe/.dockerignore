@@ -1,0 +1,7 @@
+.git
+.gitignore
+Dockerfile
+.dockerignore
+**/__pycache__
+__test.html
+__edtest.html

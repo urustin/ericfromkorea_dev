@@ -1,0 +1,14 @@
+[
+  {
+    "title": "메인 포트폴리오",
+    "desc": "개인 소개와 포트폴리오로 들어가는 첫 페이지입니다.",
+    "url": "https://ericfromkorea.com/",
+    "order": 1
+  },
+  {
+    "title": "Horang",
+    "desc": "호랑곶감 앱입니다.",
+    "url": "https://horang.ericfromkorea.com/",
+    "order": 7
+  }
+]

@@ -1,0 +1,76 @@
+/* 전역 스타일: 어두운 테마, 가운데 정렬 레이아웃 */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  background: #0f1115;
+  color: #e6e8ec;
+  line-height: 1.5;
+}
+.wrap { max-width: 920px; margin: 0 auto; padding: 32px 20px 64px; }
+header h1 { margin: 0 0 6px; font-size: 1.6rem; }
+.sub { margin: 0 0 24px; color: #9aa3b2; font-size: .92rem; }
+code { background: #1b1f29; padding: 2px 6px; border-radius: 5px; color: #8ad; }
+
+/* 자매 사이트 링크 네비게이션 */
+.nav { display: flex; gap: 8px; margin: 0 0 24px; font-size: .88rem; }
+.nav a, .nav-cur {
+  padding: 6px 12px; border-radius: 999px; text-decoration: none;
+}
+.nav a { color: #cdd3dd; background: #1b1f29; }
+.nav a:hover { background: #232a36; }
+.nav-cur { color: #4f7cff; background: #18202f; font-weight: 600; }
+
+/* 업로드 드롭 영역 */
+.drop {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 220px; padding: 24px;
+  border: 2px dashed #2c3340; border-radius: 14px;
+  background: #151922; cursor: pointer; text-align: center;
+  transition: border-color .15s, background .15s;
+}
+.drop:hover, .drop.over { border-color: #4f7cff; background: #18202f; }
+.drop-msg { color: #9aa3b2; font-size: 1rem; }
+
+/* 작업 영역 */
+.stage { margin-top: 8px; }
+.canvas-box {
+  position: relative; display: inline-block; max-width: 100%;
+  border-radius: 12px; overflow: hidden; line-height: 0;
+  background: #0a0c10; user-select: none;
+}
+#img { display: block; max-width: 100%; height: auto; -webkit-user-drag: none; }
+
+/* 선택 사각형 */
+.sel {
+  position: absolute; border: 1.5px solid #4f7cff;
+  background: rgba(79,124,255,.18);
+  box-shadow: 0 0 0 9999px rgba(0,0,0,.45);
+  pointer-events: none;
+}
+
+/* 하단 바 */
+.bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-top: 16px; flex-wrap: wrap;
+}
+.info { color: #9aa3b2; font-size: .9rem; font-variant-numeric: tabular-nums; }
+
+/* 회전 슬라이더 */
+.angle {
+  display: flex; align-items: center; gap: 8px;
+  color: #9aa3b2; font-size: .85rem; white-space: nowrap;
+}
+.angle input[type=range] { width: 140px; accent-color: #e34; }
+.angle input:disabled { opacity: .4; }
+#angleVal { width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
+
+.actions { display: flex; gap: 10px; }
+.btn {
+  border: none; border-radius: 9px; padding: 10px 18px;
+  font-size: .92rem; font-weight: 600; cursor: pointer;
+  background: #4f7cff; color: #fff; transition: opacity .15s;
+}
+.btn:hover { opacity: .9; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.ghost { background: #232a36; color: #cdd3dd; }

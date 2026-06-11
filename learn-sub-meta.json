@@ -1,0 +1,62 @@
+{
+  "/dataset-viewer/": {
+    "title": "데이터셋 뷰어",
+    "desc": "데이터셋을 탐색하는 도구입니다.",
+    "order": 1
+  },
+  "/small-vlm/": {
+    "title": "작은 VLM 바닥부터 만들기",
+    "desc": "작은 비전-언어 모델을 처음부터 구현해보는 노트입니다.",
+    "order": 2
+  },
+  "/isaac-study/": {
+    "title": "Isaac Sim 한글 가이드",
+    "desc": "NVIDIA Isaac Sim을 한글로 정리한 가이드입니다.",
+    "order": 3
+  },
+  "/gisa/": {
+    "title": "정처기 실기 스터디",
+    "desc": "정보처리기사 실기 요약·퀴즈 학습 자료입니다.",
+    "order": 4
+  },
+  "/thesis/": {
+    "title": "논문 노트",
+    "desc": "논문을 읽고 정리한 인터랙티브 노트 모음입니다.",
+    "order": 5
+  },
+  "/video-to-image/": {
+    "title": "비디오 이미지 문서화",
+    "desc": "영상과 자막을 한국어 이미지 문서로 바꾸는 도구입니다.",
+    "order": 6
+  },
+  "/code-test/": {
+    "title": "코드 테스트",
+    "desc": "ML 코딩 문제를 풀어보는 학습 환경입니다.",
+    "order": 7
+  },
+  "/pixel-art/": {
+    "title": "픽셀아트 모델 비교",
+    "desc": "픽셀아트 생성 모델들을 비교해보는 페이지입니다.",
+    "order": 8
+  },
+  "/resume/": {
+    "title": "Resume",
+    "desc": "",
+    "order": 99
+  },
+  "/pixel-model/": {
+    "title": "Pixel Model",
+    "desc": "",
+    "order": 99
+  },
+  "/small-stable-diffusion/": {
+    "title": "Small Stable Diffusion",
+    "desc": "",
+    "order": 99
+  },
+  "/pixel-model.bak.20260606-163401/": {
+    "title": "Pixel Model.Bak.20260606 163401",
+    "desc": "",
+    "order": 99
+  }
+}

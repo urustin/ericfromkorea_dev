@@ -1,0 +1,69 @@
+/* Notion-style block editor */
+.ne { margin-top: 18px; counter-reset: ol; }
+.ne-hint { margin-bottom: 16px; font-size: 0.85rem; }
+
+.ne-block { position: relative; padding: 2px 0 2px 0; margin-left: 6px; }
+.ne-gutter {
+  position: absolute; left: -46px; top: 2px; display: flex; gap: 2px;
+  opacity: 0; transition: opacity 0.12s;
+}
+.ne-block:hover > .ne-gutter { opacity: 1; }
+.ne-add, .ne-handle {
+  width: 20px; height: 22px; border: none; background: none; cursor: pointer;
+  color: var(--ink-faint); border-radius: 4px; font-size: 0.9rem; line-height: 1;
+}
+.ne-add:hover, .ne-handle:hover { background: var(--hover); color: var(--ink); }
+.ne-handle { cursor: grab; }
+
+.ne-content { outline: none; padding: 3px 2px; border-radius: 4px; line-height: 1.6; }
+.ne-content:empty::before { content: attr(data-ph); color: var(--ink-faint); }
+.ne-block[data-type="paragraph"] .ne-content:empty::before { content: "‘/’ 로 블록을 추가하세요"; color: var(--ink-faint); }
+.ne-block[data-type="heading_1"] .ne-content { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.02em; }
+.ne-block[data-type="heading_2"] .ne-content { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+.ne-block[data-type="heading_3"] .ne-content { font-size: 1.22rem; font-weight: 600; }
+.ne-block[data-type="bulleted_list_item"] .ne-content,
+.ne-block[data-type="numbered_list_item"] .ne-content { padding-left: 26px; }
+.ne-block[data-type="bulleted_list_item"] .ne-content::before {
+  content: "•"; position: absolute; left: 8px; color: var(--ink); }
+.ne-block[data-type="numbered_list_item"] .ne-content { counter-increment: ol; }
+.ne-block[data-type="numbered_list_item"] .ne-content::before {
+  content: counter(ol) "."; position: absolute; left: 4px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.ne-block[data-type="quote"] .ne-content { border-left: 3px solid var(--ink); padding-left: 14px; }
+
+.ne-todo { display: flex; align-items: flex-start; gap: 8px; }
+.ne-todo .ne-content { flex: 1; }
+.ne-callout { display: flex; gap: 10px; background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; }
+.ne-cic { cursor: text; font-size: 1.1rem; outline: none; }
+.ne-callout .ne-content { flex: 1; }
+.ne-codewrap { background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; }
+.ne-lang { margin-bottom: 8px; height: 28px; font-size: 0.8rem; width: 140px; }
+.ne-code { font-family: var(--mono); font-size: 0.86rem; white-space: pre-wrap; }
+.ne-hr { border: none; border-top: 2px solid var(--line-strong); margin: 6px 0; }
+.ne-img img { max-width: 100%; border-radius: var(--radius); }
+.ne-imgbar { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
+.ne-cap { font-size: 0.85rem; color: var(--ink-soft); outline: none; flex: 1; }
+.ne-cap:empty::before { content: attr(data-ph); color: var(--ink-faint); }
+.ne-lock { font-size: 0.78rem; color: var(--ink-faint); margin-bottom: 4px; }
+.ne-ro { opacity: 0.85; pointer-events: none; }
+
+/* Slash menu */
+.ne-slash {
+  position: absolute; z-index: 200; width: 230px; max-height: 300px; overflow-y: auto;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow-lg); padding: 6px;
+}
+.ne-slash.hidden, .ne-tb.hidden { display: none; }
+.ne-slash__it { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+.ne-slash__it.on { background: var(--hover); }
+.ne-slash__ic { width: 26px; height: 26px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 5px; font-size: 0.78rem; }
+.ne-slash__empty { padding: 8px 10px; color: var(--ink-faint); font-size: 0.85rem; }
+
+/* Selection toolbar */
+.ne-tb { position: absolute; z-index: 210; display: flex; gap: 2px; padding: 4px; background: var(--ink); border-radius: var(--radius-pill); box-shadow: var(--shadow-lg); }
+.ne-tb__b { border: none; background: none; color: #fff; cursor: pointer; padding: 5px 9px; border-radius: var(--radius-pill); font-size: 0.85rem; }
+.ne-tb__b:hover { background: rgba(255,255,255,0.18); }
+
+/* Block menu */
+.ne-menu { position: absolute; z-index: 220; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 6px; min-width: 140px; }
+.ne-menu__it { padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+.ne-menu__it:hover { background: var(--hover); }
