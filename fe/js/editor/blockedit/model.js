@@ -18,6 +18,7 @@ export const TYPES = [
   { type: 'table', label: '표', icon: '▦', cmd: 'table 표 테이블', md: null },
   { type: 'column_list', label: '2단 컬럼', icon: '⫼', cmd: 'column 컬럼 2단 분할', md: null },
   { type: 'column_list', label: '3단 컬럼', icon: '⫶', cmd: 'column 컬럼 3단 분할', md: null, cols: 3 },
+  { type: 'column_list', label: '4단 컬럼', icon: '⁞⁞', cmd: 'column 컬럼 4단 분할', md: null, cols: 4 },
   { type: 'bookmark', label: '북마크', icon: '🔖', cmd: 'bookmark 북마크 링크 url', md: null },
   { type: 'video', label: '동영상', icon: '🎬', cmd: 'video 동영상 비디오 유튜브 youtube vimeo', md: null },
   { type: 'embed', label: '임베드', icon: '🌐', cmd: 'embed 임베드 iframe 위젯', md: null },

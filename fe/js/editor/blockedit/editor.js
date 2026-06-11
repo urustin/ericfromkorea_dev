@@ -55,10 +55,10 @@ export function mountBlockEditor(slug, blocks, opts = {}) {
     if (t.type === 'divider') { api.convert(block, 'divider'); api.newAfter(block, 'paragraph', ''); }
     else {
       const c = api.convert(block, t.type);
-      if (t.cols === 3) { // 3단 컬럼: 기본 2단에 컬럼 하나 추가
+      if (t.cols > 2) { // 3단/4단 컬럼: 기본 2단에 컬럼을 추가
         const { newColEl } = await import('./complex.js');
         const cols = block.querySelector('.ne-cols');
-        cols.insertBefore(newColEl(makeBlockEl), cols.lastElementChild);
+        for (let i = 2; i < t.cols; i += 1) cols.insertBefore(newColEl(makeBlockEl), cols.lastElementChild);
       }
       if (c) placeCaret(c, true);
     }
