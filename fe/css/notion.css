@@ -113,3 +113,11 @@ html { scroll-behavior: smooth; }
   font-size:1.1rem; cursor:pointer; box-shadow:var(--shadow-lg); transition:opacity .2s; }
 .top-btn.hidden { opacity:0; pointer-events:none; }
 .top-btn:hover { background:var(--hover); }
+
+/* 접이식 섹션 (긴 문서 기본 접힘) */
+.nb-sec { border-bottom:1px solid var(--line); margin:4px 0; }
+.nb-sec__t { cursor:pointer; font-size:1.4rem; font-weight:700; letter-spacing:-0.02em;
+  padding:12px 0; list-style-position:outside; color:var(--ink); }
+.nb-sec__t:hover { color: var(--t-blue); }
+.nb-sec__body { padding: 4px 0 18px; }
+.nb-sec[open] > .nb-sec__t { border-bottom:none; }

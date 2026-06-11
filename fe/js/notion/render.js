@@ -11,11 +11,20 @@ function listItem(b) {
   return el('li', {}, richText(b.rich), b.children ? renderBlocks(b.children) : null);
 }
 
-// 목차(요약 보기) — 같은 레벨의 헤딩들로 점프 링크를 만든다 (Notion table_of_contents)
+// 목차(요약 보기) — 헤딩/접이식 섹션으로 점프 링크를 만든다 (Notion table_of_contents)
 function renderToc(blocks) {
   const items = blocks
-    .map((b, i) => (HEADING.has(b.type) && plain(b)
-      ? el('a', { class: `nb-toc__i lv${b.type.slice(-1)}`, href: `#h-${i}` }, plain(b)) : null))
+    .map((b, i) => {
+      const sec = b.type === 'collapsed_section';
+      if (!(sec || HEADING.has(b.type)) || !plain(b)) return null;
+      return el('a', {
+        class: `nb-toc__i lv${sec ? 2 : b.type.slice(-1)}`, href: `#h-${i}`,
+        onClick: () => { // 접힌 섹션으로 점프하면 자동으로 펼친다
+          const t = document.getElementById(`h-${i}`);
+          if (t && t.tagName === 'DETAILS') t.open = true;
+        },
+      }, plain(b));
+    })
     .filter(Boolean);
   if (!items.length) return null;
   return el('details', { class: 'nb-toc', open: 'open' },
@@ -45,7 +54,7 @@ export function renderBlocks(blocks) {
     }
     const node = renderBlock(b, renderBlocks);
     if (node) {
-      if (HEADING.has(b.type)) node.id = `h-${i}`; // 목차 점프 앵커
+      if (HEADING.has(b.type) || b.type === 'collapsed_section') node.id = `h-${i}`; // 목차 점프 앵커
       frag.append(node);
     }
     i += 1;

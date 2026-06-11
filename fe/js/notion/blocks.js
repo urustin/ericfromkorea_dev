@@ -45,6 +45,11 @@ export function renderBlock(b, kids) {
       b.caption && b.caption.length
         ? el('figcaption', {}, richText(b.caption)) : null);
 
+  if (t === 'collapsed_section') // 긴 문서용 접이식 섹션 (보기 전용 변환 블록)
+    return el('details', { class: 'nb-sec', ...(b.open ? { open: 'open' } : {}) },
+      el('summary', { class: 'nb-sec__t' }, richText(b.rich)),
+      el('div', { class: 'nb-sec__body' }, b.children ? kids(b.children) : null));
+
   if (t === 'toggle')
     return el('details', { class: 'nb-toggle' },
       el('summary', {}, richText(b.rich)),

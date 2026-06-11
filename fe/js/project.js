@@ -29,14 +29,34 @@ function header(p) {
       prop('Skill & Library', tagRow(p.skills))));
 }
 
+// 긴 문서: h2 섹션을 접이식(collapsed_section)으로 묶어 기본 화면을 짧게 만든다.
+// 보기 전용 변환 — 편집/저장은 원본 블록을 그대로 사용한다.
+function collapseSections(view) {
+  const out = [];
+  let cur = null;
+  for (const b of view) {
+    if (b.type === 'heading_2') {
+      cur = { type: 'collapsed_section', rich: b.rich, color: b.color, children: [] };
+      out.push(cur);
+    } else if (cur && b.type !== 'table_of_contents') {
+      cur.children.push(b);
+    } else {
+      out.push(b);
+    }
+  }
+  const first = out.find((b) => b.type === 'collapsed_section');
+  if (first) first.open = true; // 첫 섹션(요약)은 펼친 채로
+  return out;
+}
+
 // 본문 + (인증 시) 편집 버튼 마운트 — 프로젝트/서브페이지 공용
 async function mountBody(slug) {
   const blocks = await getDetail(slug);
-  // 긴 문서(헤딩 6개 이상)인데 목차가 없으면 '목차·요약 보기'를 자동으로 붙인다
-  const view = [...blocks];
-  if (view.filter((b) => b.type.startsWith('heading_')).length >= 6
-      && !view.some((b) => b.type === 'table_of_contents')) {
-    view.unshift({ type: 'table_of_contents' });
+  let view = [...blocks];
+  // 긴 문서(헤딩 6개 이상): 목차 자동 추가 + h2 섹션 접기
+  if (view.filter((b) => b.type.startsWith('heading_')).length >= 6) {
+    if (!view.some((b) => b.type === 'table_of_contents')) view.unshift({ type: 'table_of_contents' });
+    view = collapseSections(view);
   }
   const body = el('article', { class: 'notion-body' });
   body.append(view.length ? renderBlocks(view)
