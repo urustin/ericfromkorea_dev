@@ -14,8 +14,8 @@ __pycache__/
 ._*
 .DS_Store
 
-# 데이터 폴더 (전역 규칙)
-data/
+# 데이터 폴더 (전역 규칙) — 루트만, fe/js/data(사이트 콘텐츠)는 추적
+/data/
 
 # 외부 참조용 다운로드 (Notion Electron 래퍼)
 notion-electron/

@@ -1,0 +1,61 @@
+{
+  "name": "손승우",
+  "title": "🙋‍♂️ 개발자 손승우입니다.",
+  "photo": "assets/img/profile.png",
+  "updated": "Last Updated. 2026/3/4",
+  "contacts": [
+    {
+      "icon": "📞",
+      "text": "010-9514-5560"
+    },
+    {
+      "icon": "✉️",
+      "text": "ericfromkorea@gmail.com"
+    },
+    {
+      "icon": "📝",
+      "text": "medium.com/@ericfromkorea",
+      "href": "https://medium.com/@ericfromkorea"
+    }
+  ],
+  "skillsCode": "tasted = [\"java\", \"javascript\", \"C\"]\nexperienced = [\"python\"]\ntodo = [\"C++\", \"Machine Learning\"]\n\nwhile 1:\n    [study(skill) for skill in todo_list]",
+  "aboutMe": [
+    "책임감을 바탕으로 마감에 절대 늦지 않습니다.",
+    "자기주도적으로 문제를 분석하고 해결하는 것에 큰 강점을 가지고 있습니다.",
+    "5년 이상 영화업계에 종사하며 2억 이상의 프로젝트 진행, 30명 이상의 스태프 관리를 해본 경험이 있습니다.",
+    "배움을 멈추지 않습니다."
+  ],
+  "career": [
+    {
+      "when": "2025.03 ~",
+      "what": "Nota AI, AI Dataset Designer"
+    }
+  ],
+  "awards": [
+    {
+      "when": "2026",
+      "what": "정보처리기사"
+    },
+    {
+      "when": "2026",
+      "what": "빅데이터 처리"
+    }
+  ],
+  "education": [
+    {
+      "when": "2017",
+      "what": "서울예술대학교 디지털아트 졸업"
+    },
+    {
+      "when": "2020",
+      "what": "국가평생교육진흥원 디지털아트 학사 취득"
+    }
+  ],
+  "language": [
+    {
+      "when": "2024",
+      "what": "IELTS Overall 7.0 / 9.0"
+    }
+  ],
+  "languageImage": "assets/img/ielts.png"
+}

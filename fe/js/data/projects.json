@@ -1,0 +1,263 @@
+[
+ {
+  "id": "text-gen-finetune",
+  "name": "[딥러닝] Text Gen 모델 파인튜닝",
+  "status": "Not started",
+  "type": "Main",
+  "date": "2026-04-10",
+  "client": "",
+  "summary": "호감도 / 장비 상태 등, 캐릭터 상태에 따른 NPC 대사 변경 실험",
+  "skills": []
+ },
+ {
+  "id": "agent-mcp-rag",
+  "name": "[AI응용] Agent MCP RAG 하네스 직접 구현",
+  "status": "Done",
+  "type": "Main",
+  "date": "2026-03-10",
+  "client": "Personal",
+  "summary": "RAG · MCP · Agent · 하네스를 각각 최소 코드로 직접 구현하며 본질을 내재화",
+  "skills": [
+   "Python",
+   "LangChain",
+   "OpenAI API",
+   "FastMCP",
+   "Gradio",
+   "Mermaid"
+  ]
+ },
+ {
+  "id": "closed-network",
+  "name": "[네트워크] 폐쇄망 구축해보기",
+  "status": "Done",
+  "type": "Main",
+  "date": "2025-08-01",
+  "client": "Personal",
+  "summary": "",
+  "skills": [
+   "Wireshark",
+   "Netplan",
+   "Network"
+  ]
+ },
+ {
+  "id": "linux-xv6",
+  "name": "[인프라] 리눅스 심화_ xv6",
+  "status": "Not started",
+  "type": "Hidden",
+  "date": "",
+  "client": "",
+  "summary": "",
+  "skills": []
+ },
+ {
+  "id": "kafka-k8s",
+  "name": "[인프라] 카프카/쿠버네티스~ 데이터 파이프라인~",
+  "status": "Not started",
+  "type": "Hidden",
+  "date": "",
+  "client": "",
+  "summary": "",
+  "skills": []
+ },
+ {
+  "id": "auto-labeling",
+  "name": "딥러닝_오토 라벨링",
+  "status": "Not started",
+  "type": "Hidden",
+  "date": "",
+  "client": "",
+  "summary": "",
+  "skills": []
+ },
+ {
+  "id": "dnf-style-finetune",
+  "name": "[딥러닝] 던파 style 캐릭터 생성 모델 Fine-tuning",
+  "status": "Done",
+  "type": "Main",
+  "date": "2026-04-30",
+  "client": "",
+  "summary": "던파 그림체 학습한 모델 생성",
+  "skills": []
+ },
+ {
+  "id": "data-rnd",
+  "name": "[딥러닝] 학습/검지용 데이터 RND",
+  "status": "Done",
+  "type": "Hidden",
+  "date": "2025-03-01",
+  "client": "Personal",
+  "summary": "딥러닝 학습",
+  "skills": [
+   "After Effect",
+   "ComfyUI"
+  ]
+ },
+ {
+  "id": "template-nextjs",
+  "name": "Template",
+  "status": "Done",
+  "type": "Hidden",
+  "date": "2024-08-01",
+  "client": "Victroia Wool Processors",
+  "summary": "Using NextJS",
+  "skills": [
+   "NextJS"
+  ]
+ },
+ {
+  "id": "fullstack-cicd",
+  "name": "[풀스택] 기획부터 CICD까지",
+  "status": "Done",
+  "type": "Optional",
+  "date": "2024-10-02",
+  "client": "Luna English",
+  "summary": "지금까지 학습한 모든 개발 지식을 쏟아낸 경험이었습니다.",
+  "skills": [
+   "ReactJS",
+   "NodeJS",
+   "AWS",
+   "MongoDB",
+   "Passport.js"
+  ]
+ },
+ {
+  "id": "react-native-expo",
+  "name": "프론트_ React Native / Expo",
+  "status": "Done",
+  "type": "Hidden",
+  "date": "2023-10-01",
+  "client": "Personal",
+  "summary": "리액트 네이티브로 앱 개발",
+  "skills": [
+   "ReactJS",
+   "React Native",
+   "Expo",
+   "Google Oauth",
+   "Facebook API",
+   "AWS"
+  ]
+ },
+ {
+  "id": "ai-build-tool",
+  "name": "프론트_ AI 빌드 툴 사용",
+  "status": "Done",
+  "type": "Hidden",
+  "date": "2023-11-01",
+  "client": "TRG",
+  "summary": "AI 웹사이트 빌드 툴 사용해보기",
+  "skills": [
+   "Build.io",
+   "ReactJS",
+   "Tailwind"
+  ]
+ },
+ {
+  "id": "data-labeling",
+  "name": "[딥러닝] 데이터 라벨링 직접 실습",
+  "status": "Done",
+  "type": "Optional",
+  "date": "2025-02-01",
+  "client": "Personal",
+  "summary": "데이터 라벨링에 관한 다양한 실험들 진행",
+  "skills": [
+   "Label Studio"
+  ]
+ },
+ {
+  "id": "vision-spread",
+  "name": "백엔드_ Google Vision API / Spread API",
+  "status": "Done",
+  "type": "Hidden",
+  "date": "2024-01-01",
+  "client": "호랑곶감",
+  "summary": "Using NextJS",
+  "skills": [
+   "NextJS"
+  ]
+ },
+ {
+  "id": "nextjs-ssr",
+  "name": "프론트_ NextJS 사용",
+  "status": "Done",
+  "type": "Hidden",
+  "date": "2023-08-01",
+  "client": "Victroia Wool Processors",
+  "summary": "NextJS(SSR)로 웹사이트 개발",
+  "skills": [
+   "NextJS"
+  ]
+ },
+ {
+  "id": "firebase-storage",
+  "name": "[백엔드] Firebase, Storage",
+  "status": "Done",
+  "type": "Hidden",
+  "date": "2023-08-01",
+  "client": "KTY",
+  "summary": "Firestore + Storage를 사용한 유저 친화적 관리자 게시판 개발",
+  "skills": [
+   "Javascript",
+   "Firebase"
+  ]
+ },
+ {
+  "id": "java-openai",
+  "name": "[백엔드] JAVA / OpenAI API",
+  "status": "Done",
+  "type": "Optional",
+  "date": "2024-09-01",
+  "client": "Invoman, Invoice Manager",
+  "summary": "JAVA 백엔드를 경험해보았습니다.",
+  "skills": [
+   "Java",
+   "OpenAI API",
+   "Google Vision API"
+  ]
+ },
+ {
+  "id": "electronjs",
+  "name": "[프론트] ElectronJS",
+  "status": "Done",
+  "type": "Optional",
+  "date": "2023-07-01",
+  "client": "Personal",
+  "summary": "데스크톱 앱 만들기",
+  "skills": [
+   "ElectronJS"
+  ]
+ },
+ {
+  "id": "gmaps-distance",
+  "name": "[백엔드] Google Maps API 거리 계산기",
+  "status": "Done",
+  "type": "Optional",
+  "date": "2023-09-01",
+  "client": "Melbourne Pickup",
+  "summary": "우버 스타일 거리 계산기 구현",
+  "skills": [
+   "Javascript",
+   "Google Map API"
+  ]
+ },
+ {
+  "id": "test1",
+  "name": "test1",
+  "status": "Not started",
+  "type": "",
+  "date": "",
+  "client": "",
+  "summary": "",
+  "skills": []
+ },
+ {
+  "id": "test3",
+  "name": "test3",
+  "status": "Not started",
+  "type": "",
+  "date": "",
+  "client": "",
+  "summary": "",
+  "skills": []
+ }
+]
