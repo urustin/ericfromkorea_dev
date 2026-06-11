@@ -131,3 +131,9 @@ tr:hover .ne-xbtn { opacity:1; }
 
 /* 드래그 */
 .ne-dragging { opacity:0.4; }
+
+/* 서브페이지 블록 */
+.ne-childpage { display:flex; gap:8px; align-items:center; border:1px solid var(--line);
+  border-radius:var(--radius); padding:8px 10px; }
+.ne-childpage__t { flex:1; font-weight:600; }
+.ne-childpage__go { text-decoration:none; color:var(--ink-soft); }

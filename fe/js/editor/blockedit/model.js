@@ -19,7 +19,8 @@ export const TYPES = [
   { type: 'column_list', label: '2단 컬럼', icon: '⫼', cmd: 'column 컬럼 단 분할', md: null },
   { type: 'bookmark', label: '북마크', icon: '🔖', cmd: 'bookmark 북마크 링크 url', md: null },
 ];
-export const EDITSET = new Set(TYPES.map((t) => t.type));
+// child_page는 슬래시 메뉴엔 없지만(생성은 '페이지' 액션) 편집 가능한 블록이다.
+export const EDITSET = new Set([...TYPES.map((t) => t.type), 'child_page']);
 export const byMd = (s) => TYPES.find((t) => t.md === s);
 
 // Notion color palette (text + background variants share these names).

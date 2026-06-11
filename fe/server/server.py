@@ -56,6 +56,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self._login()
         if self.path == "/api/page":
             return self._guard(self._new_page)
+        if self.path == "/api/subpage":
+            return self._guard(self._new_subpage)
         if self.path.split("?")[0] == "/api/upload":
             return self._guard(self._upload)
         return self._json(404, {"error": "not found"})
@@ -98,6 +100,10 @@ class Handler(SimpleHTTPRequestHandler):
     def _new_page(self):
         name = json.loads(self._read() or b"{}").get("name", "")
         self._json(200, store.create_page(name))
+
+    def _new_subpage(self):
+        body = json.loads(self._read() or b"{}")
+        self._json(200, store.create_subpage(body.get("title", ""), body.get("parent", "")))
 
     def _upload(self):
         from urllib.parse import urlparse, parse_qs

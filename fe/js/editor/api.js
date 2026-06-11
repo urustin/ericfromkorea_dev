@@ -15,6 +15,17 @@ export const saveProfile = (profile) => put('api/profile', profile);
 export const saveProjects = (rows) => put('api/projects', rows);
 export const saveDetail = (slug, blocks) => put(`api/detail/${slug}`, blocks);
 
+// Create a subpage under a project detail. Returns { slug, title }.
+export async function createSubpage(title, parent) {
+  const res = await authedFetch('api/subpage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, parent }),
+  });
+  if (!res.ok) throw new Error('서브페이지 생성 실패: ' + res.status);
+  return res.json();
+}
+
 // Create a new page (project row + empty detail). Returns the new row.
 export async function createPage(name = '') {
   const res = await authedFetch('api/page', {

@@ -62,6 +62,11 @@ export function renderBlock(b, kids) {
 
   if (t === 'table') return renderTable(b);
 
+  if (t === 'child_page')
+    return el('a', { class: 'nb-childpage', href: `project.html?id=${encodeURIComponent(b.slug || '')}` },
+      el('span', { class: 'nb-childpage__ic' }, '📄'),
+      el('span', { class: 'nb-childpage__t' }, b.title || '제목 없음'));
+
   if (t === 'bookmark')
     return b.url ? el('a', { class: 'nb-bookmark', href: b.url, target: '_blank', rel: 'noopener' },
       el('span', { class: 'nb-bookmark__ic' }, '🔖'),

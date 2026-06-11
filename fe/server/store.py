@@ -50,6 +50,23 @@ def create_page(name: str) -> dict:
     return row
 
 
+def create_subpage(title: str, parent: str) -> dict:
+    """서브페이지 생성: 빈 detail 파일 + subpages.json 레지스트리 등록."""
+    title = (title or "").strip() or "제목 없음"
+    if not SLUG_RE.match(parent):
+        raise ValueError("bad parent slug")
+    reg_path = os.path.join(DATA, "subpages.json")
+    reg = json.load(open(reg_path, encoding="utf-8")) if os.path.exists(reg_path) else {}
+    base = f"{parent}-sub-{_slugify(title)[:12]}"
+    slug, n = base, 2
+    while slug in reg or os.path.exists(os.path.join(DETAILS, f"{slug}.json")):
+        slug, n = f"{base}-{n}", n + 1
+    reg[slug] = {"title": title, "parent": parent}
+    save_json("subpages.json", reg)
+    save_detail(slug, [])
+    return {"slug": slug, "title": title}
+
+
 def save_upload(name: str, data: bytes) -> str:
     ext = (name.rsplit(".", 1)[-1] if "." in name else "png").lower()
     if ext not in EXT_OK:

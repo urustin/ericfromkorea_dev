@@ -72,10 +72,13 @@ scp <변경파일> aoo:~/prj/dev_portfolio/<경로>
 ssh aoo 'cd ~/prj/dev_portfolio/fe && docker build -t dev-portfolio-fe . \
   && docker rm -f dev-portfolio-fe \
   && docker run -d --name dev-portfolio-fe -p 60022:8000 --restart unless-stopped \
-       --env-file ~/prj/dev_portfolio/.editor-secret dev-portfolio-fe'
+       --env-file ~/prj/dev_portfolio/.editor-secret \
+       -v ~/prj/dev_portfolio/fe:/app --user 1000:1000 dev-portfolio-fe'
 ```
 
-**주의:** `--env-file`을 빼먹으면 에디터 로그인이 안 된다 (`EDITOR_PASSWORD`/`EDITOR_SECRET` 필요).
+**주의:**
+- `--env-file`을 빼먹으면 에디터 로그인이 안 된다 (`EDITOR_PASSWORD`/`EDITOR_SECRET` 필요).
+- `-v ...fe:/app` 볼륨 마운트가 없으면 에디터로 저장한 내용이 컨테이너 재빌드(매일 cron) 때 사라진다.
 ```bash
 ```
 

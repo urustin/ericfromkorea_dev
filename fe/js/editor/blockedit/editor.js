@@ -9,7 +9,7 @@ import { onInput } from './input.js';
 import { enableDnd } from './dnd.js';
 import { placeCaret } from './caret.js';
 import { editActions } from '../bar.js';
-import { saveDetail, uploadImage, createPage } from '../api.js';
+import { saveDetail, uploadImage, createSubpage } from '../api.js';
 
 export function mountBlockEditor(slug, blocks) {
   window.__editing = true;
@@ -45,16 +45,40 @@ export function mountBlockEditor(slug, blocks) {
     for (let i = 0; i < ctx.len; i += 1) document.execCommand('delete');
     const block = ctx.content.closest('.ne-block');
     if (t.action === 'page') {
-      const name = (prompt('새 페이지 제목', '제목 없음') || '제목 없음').trim();
-      const row = await createPage(name);
-      const w = api.newAfter(block, 'paragraph', '');
-      w.querySelector('.ne-content').innerHTML =
-        `<a href="project.html?id=${row.id}">📄 ${name}</a>`;
+      // Notion처럼 현재 페이지 하위에 서브페이지를 만들고 child_page 블록을 삽입
+      const name = (prompt('새 하위 페이지 제목', '제목 없음') || '제목 없음').trim();
+      const sub = await createSubpage(name, slug);
+      block.after(makeBlockEl({ type: 'child_page', title: name, slug: sub.slug }));
       return;
     }
     if (t.type === 'divider') { api.convert(block, 'divider'); api.newAfter(block, 'paragraph', ''); }
     else { const c = api.convert(block, t.type); if (c) placeCaret(c, true); }
   }
+
+  // 이미지 드래그&드롭 / 클립보드 붙여넣기 → 업로드 후 이미지 블록 삽입
+  async function insertImages(files, ref) {
+    for (const f of files) {
+      const r = await uploadImage(f);
+      const w = makeBlockEl({ type: 'image', src: r.src });
+      if (ref) ref.after(w); else surface.append(w);
+      ref = w;
+    }
+  }
+  surface.addEventListener('dragover', (e) => {
+    if ([...e.dataTransfer.types].includes('Files')) e.preventDefault();
+  });
+  surface.addEventListener('drop', (e) => {
+    const files = [...(e.dataTransfer.files || [])].filter((f) => f.type.startsWith('image/'));
+    if (!files.length) return;
+    e.preventDefault();
+    insertImages(files, e.target.closest('.ne-block'));
+  });
+  surface.addEventListener('paste', (e) => {
+    const files = [...(e.clipboardData.files || [])].filter((f) => f.type.startsWith('image/'));
+    if (!files.length) return;
+    e.preventDefault();
+    insertImages(files, e.target.closest('.ne-block'));
+  });
 
   enableDnd(surface);
   surface.addEventListener('keydown', (e) => onKeydown(e, api));

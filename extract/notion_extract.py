@@ -12,7 +12,9 @@ HDR = {"Authorization": f"Bearer {TOKEN}", "Notion-Version": "2022-06-28"}
 
 KEEP = {"paragraph", "heading_1", "heading_2", "heading_3", "bulleted_list_item",
         "numbered_list_item", "to_do", "quote", "callout", "code", "divider",
-        "image", "toggle", "column_list", "column", "table", "table_row", "bookmark"}
+        "image", "toggle", "column_list", "column", "table", "table_row", "bookmark",
+        "child_page"}
+SUBPAGES = {}  # 서브페이지 레지스트리 {slug: {"title", "parent"}}
 
 
 def api(url):
@@ -83,6 +85,14 @@ def norm(blocks, slug, counter):
         t = b["type"]
         if t not in KEEP:
             continue
+        if t == "child_page":  # 서브페이지: 별도 detail로 재귀 추출하고 링크 블록 생성
+            sub = f"{slug}-sub-{b['id'].replace('-', '')[:8]}"
+            title = b["child_page"].get("title", "제목 없음")
+            SUBPAGES[sub] = {"title": title, "parent": slug}
+            (OUT / f"{sub}.json").write_text(json.dumps(
+                norm(children(b["id"]), sub, [0]), ensure_ascii=False, separators=(",", ":")))
+            out.append({"type": "child_page", "title": title, "slug": sub})
+            continue
         if t == "image":
             counter[0] += 1
             node = dl_image(b, slug, counter[0])
@@ -121,11 +131,19 @@ def norm(blocks, slug, counter):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
+    only = set(sys.argv[1:])  # 인자로 slug를 주면 해당 페이지만 동기화
+    reg_path = FE / "js" / "data" / "subpages.json"
+    if reg_path.exists():  # 기존 레지스트리 유지(에디터에서 만든 서브페이지 보존)
+        SUBPAGES.update(json.loads(reg_path.read_text()))
     for slug, pid in SLUGS.items():
+        if only and slug not in only:
+            continue
         blocks = norm(children(pid), slug, [0])
         (OUT / f"{slug}.json").write_text(
             json.dumps(blocks, ensure_ascii=False, separators=(",", ":")))
         print(f"{slug}: {len(blocks)} blocks", flush=True)
+    reg_path.write_text(json.dumps(SUBPAGES, ensure_ascii=False, indent=1))
+    print(f"subpages: {len(SUBPAGES)}", flush=True)
 
 
 if __name__ == "__main__":

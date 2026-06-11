@@ -84,3 +84,9 @@
 .nb-bookmark:hover { background: var(--hover); }
 .nb-bookmark__url { color: var(--t-blue); font-size:0.88rem; word-break:break-all; }
 .nb-bookmark__cap { color: var(--ink-soft); font-size:0.85rem; }
+
+/* 서브페이지 링크 카드 */
+.nb-childpage { display:flex; gap:8px; align-items:center; border:1px solid var(--line);
+  border-radius:var(--radius); padding:10px 12px; text-decoration:none; color:inherit; margin:4px 0; }
+.nb-childpage:hover { background:var(--hover); }
+.nb-childpage__t { font-weight:600; border-bottom:1px solid var(--line-strong); }
