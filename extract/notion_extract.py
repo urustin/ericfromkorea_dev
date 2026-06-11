@@ -16,7 +16,7 @@ HDR = {"Authorization": f"Bearer {TOKEN}", "Notion-Version": "2022-06-28"}
 KEEP = {"paragraph", "heading_1", "heading_2", "heading_3", "bulleted_list_item",
         "numbered_list_item", "to_do", "quote", "callout", "code", "divider",
         "image", "toggle", "column_list", "column", "table", "table_row", "bookmark",
-        "child_page", "video", "embed"}
+        "child_page", "video", "embed", "table_of_contents"}
 SUBPAGES = {}  # 서브페이지 레지스트리 {slug: {"title", "parent"}}
 
 

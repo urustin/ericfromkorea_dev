@@ -4,6 +4,7 @@ import { getProfile, getProjects, getDetail } from './data/store.js';
 import { contactRow, projectCard } from './components.js';
 import { renderBlocks } from './notion/render.js';
 import { mountBar } from './editor/bar.js';
+import { mountTopButton } from './topbtn.js';
 
 document.title = '개발자 손승우입니다';
 
@@ -33,6 +34,7 @@ mount('#app', hero(P), el('hr', { class: 'divider' }), projectsSection(projects)
   el('hr', { class: 'divider' }),
   el('article', { class: 'notion-body' }, renderBlocks(body)));
 
+mountTopButton();
 mountBar(async () => {
   const { editProfile } = await import('./editor/profileEditor.js');
   editProfile(P, body);

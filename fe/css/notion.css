@@ -96,3 +96,20 @@
 .nb-embed { position:relative; aspect-ratio:16/9; margin:6px 0; }
 .nb-embed iframe { width:100%; height:100%; border:0; border-radius:var(--radius); }
 .nb-video { width:100%; border-radius:var(--radius); }
+
+/* 목차(요약 보기) */
+html { scroll-behavior: smooth; }
+.nb-toc { background:var(--bg-soft); border:1px solid var(--line); border-radius:var(--radius);
+  padding:10px 14px; margin:10px 0 18px; }
+.nb-toc summary { cursor:pointer; font-weight:600; font-size:0.92rem; }
+.nb-toc__i { display:block; padding:3px 0; color:var(--ink-soft); text-decoration:none; font-size:0.9rem; }
+.nb-toc__i:hover { color:var(--ink); text-decoration:underline; }
+.nb-toc__i.lv2 { padding-left:14px; }
+.nb-toc__i.lv3 { padding-left:28px; }
+
+/* 맨 위로 버튼 */
+.top-btn { position:fixed; right:22px; bottom:80px; width:42px; height:42px; z-index:150;
+  border:1px solid var(--line); border-radius:50%; background:var(--card); color:var(--ink);
+  font-size:1.1rem; cursor:pointer; box-shadow:var(--shadow-lg); transition:opacity .2s; }
+.top-btn.hidden { opacity:0; pointer-events:none; }
+.top-btn:hover { background:var(--hover); }

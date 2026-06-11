@@ -5,6 +5,7 @@ import { statusColors, typeColors } from './data/skillColors.js';
 import { statusPill, tag, tagRow } from './components.js';
 import { renderBlocks } from './notion/render.js';
 import { mountBar } from './editor/bar.js';
+import { mountTopButton } from './topbtn.js';
 
 const id = new URLSearchParams(location.search).get('id');
 
@@ -31,8 +32,14 @@ function header(p) {
 // 본문 + (인증 시) 편집 버튼 마운트 — 프로젝트/서브페이지 공용
 async function mountBody(slug) {
   const blocks = await getDetail(slug);
+  // 긴 문서(헤딩 6개 이상)인데 목차가 없으면 '목차·요약 보기'를 자동으로 붙인다
+  const view = [...blocks];
+  if (view.filter((b) => b.type.startsWith('heading_')).length >= 6
+      && !view.some((b) => b.type === 'table_of_contents')) {
+    view.unshift({ type: 'table_of_contents' });
+  }
   const body = el('article', { class: 'notion-body' });
-  body.append(blocks.length ? renderBlocks(blocks)
+  body.append(view.length ? renderBlocks(view)
     : el('p', { class: 'muted' }, '아직 작성된 본문이 없습니다.'));
   mount('#app', body);
   mountBar(async () => {
@@ -41,6 +48,7 @@ async function mountBody(slug) {
   }, { sync: sub ? sub.parent : slug });
 }
 
+mountTopButton();
 const projects = await getProjects();
 const p = projects.find((x) => x.id === id);
 const sub = p ? null : (await getSubpages())[id];
