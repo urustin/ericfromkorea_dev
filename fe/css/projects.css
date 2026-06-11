@@ -71,3 +71,31 @@
 @media (max-width: 720px) {
   .db-table .c-summary, .db-table .c-client, .hide-sm { display: none; }
 }
+
+/* 뷰 전환 탭 */
+.view-tabs { display:flex; gap:4px; margin:14px 0 4px; border-bottom:1px solid var(--line); }
+.view-tab { padding:6px 12px; font-size:0.88rem; color:var(--ink-soft); text-decoration:none;
+  border-bottom:2px solid transparent; }
+.view-tab.on { color:var(--ink); border-bottom-color:var(--ink); font-weight:600; }
+.view-tab:hover { background:var(--hover); border-radius:6px 6px 0 0; }
+
+/* 갤러리 뷰 */
+.gallery-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+  gap:16px; margin-top:14px; }
+.gallery-card { border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+  text-decoration:none; color:inherit; background:var(--card);
+  transition:box-shadow .15s ease, transform .15s ease; }
+.gallery-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-2px); }
+.gallery-card__cover { height:140px; background:var(--bg-soft); display:grid; place-items:center; }
+.gallery-card__cover img { width:100%; height:100%; object-fit:cover; }
+.gallery-card__ph { font-size:2rem; opacity:.5; }
+.gallery-card__body { padding:12px 14px; }
+.gallery-card__body h4 { margin:0 0 8px; font-size:0.95rem; }
+.gallery-card__meta { margin-bottom:8px; }
+
+/* 인라인 편집 셀 */
+.db-table--edit .ec { cursor:text; outline:none; min-width:80px; }
+.db-table--edit .ec:focus { background:var(--bg-soft); box-shadow:inset 0 0 0 2px var(--t-blue); border-radius:4px; }
+.db-table--edit .ec:empty::before { content:attr(data-ph); color:var(--ink-faint); }
+.db-table--edit .ec-x { width:28px; }
+.db-table--edit tr:hover .ne-xbtn { opacity:1; }

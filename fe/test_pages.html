@@ -1,0 +1,20 @@
+<!DOCTYPE html><html><body><div id="app"></div><div id="out">RUNNING</div>
+<script type="module">
+const out = [];
+window.onerror = (m) => out.push('WINERR: ' + m);
+try {
+  const { editProfile } = await import('./js/editor/profileEditor.js');
+  const P = await (await fetch('js/data/profile.json')).json();
+  const body = await (await fetch('js/data/details/profile-body.json')).json();
+  editProfile(P, body);
+  out.push('profileEdit: ' + document.querySelectorAll('.ne-block').length + ' blocks, ' +
+    document.querySelectorAll('.editor-head input').length + ' head fields');
+} catch (e) { out.push('profileEdit FAIL: ' + e.message); }
+document.querySelector('#app').replaceChildren();
+try {
+  const { editProjects } = await import('./js/editor/projectsEditor.js');
+  await editProjects();
+  out.push('projectsEdit: ' + document.querySelectorAll('.ec').length + ' cells');
+} catch (e) { out.push('projectsEdit FAIL: ' + e.message); }
+document.getElementById('out').textContent = out.join(' | ');
+</script></body></html>

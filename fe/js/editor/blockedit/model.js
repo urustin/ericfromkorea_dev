@@ -18,6 +18,8 @@ export const TYPES = [
   { type: 'table', label: '표', icon: '▦', cmd: 'table 표 테이블', md: null },
   { type: 'column_list', label: '2단 컬럼', icon: '⫼', cmd: 'column 컬럼 단 분할', md: null },
   { type: 'bookmark', label: '북마크', icon: '🔖', cmd: 'bookmark 북마크 링크 url', md: null },
+  { type: 'video', label: '동영상', icon: '🎬', cmd: 'video 동영상 비디오 유튜브 youtube vimeo', md: null },
+  { type: 'embed', label: '임베드', icon: '🌐', cmd: 'embed 임베드 iframe 위젯', md: null },
 ];
 // child_page는 슬래시 메뉴엔 없지만(생성은 '페이지' 액션) 편집 가능한 블록이다.
 export const EDITSET = new Set([...TYPES.map((t) => t.type), 'child_page']);

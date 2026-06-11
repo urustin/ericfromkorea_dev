@@ -1,0 +1,11 @@
+<!DOCTYPE html><html><body><div id="app"></div><div id="out">RUNNING</div>
+<script type="module">
+window.onerror = (m) => { document.getElementById('out').textContent = 'ERR: ' + m; };
+try {
+  const { editDetail } = await import('./js/editor/detailEditor.js');
+  const blocks = await (await fetch('js/data/details/dnf-style-finetune.json')).json();
+  editDetail('dnf-style-finetune', blocks);
+  const n = document.querySelectorAll('.ne-block').length;
+  document.getElementById('out').textContent = 'MOUNTED ' + n + ' blocks';
+} catch (e) { document.getElementById('out').textContent = 'FAIL: ' + e.message + '\n' + e.stack; }
+</script></body></html>

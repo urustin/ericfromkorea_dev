@@ -40,7 +40,9 @@ const FIXTURE = [
     { type: 'column', children: [{ type: 'to_do', checked: false, rich: [{ text: '오른쪽' }] }] }] },
   { type: 'bookmark', url: 'https://example.com' },
   { type: 'child_page', title: '하위 페이지', slug: 'parent-sub-abcd1234' },
-  { type: 'embed', url: 'https://x.y', extra: 1 }, // 미지원 타입 → 원본 보존 확인
+  { type: 'video', url: 'https://youtu.be/dQw4w9WgXcQ', caption: [{ text: '데모 영상' }] },
+  { type: 'embed', url: 'https://example.com/widget' },
+  { type: 'synced_block', x: 1 }, // 미지원 타입 → 원본 보존 확인
 ];
 
 const surface = document.createElement('div');

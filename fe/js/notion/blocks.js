@@ -1,6 +1,7 @@
 // Single Notion block -> DOM node. `kids` renders a child block array.
 import { el } from '../dom.js';
 import { richText, colorStyle } from './richtext.js';
+import { mediaEl } from './media.js';
 
 const HEADING = { heading_1: 'h2', heading_2: 'h3', heading_3: 'h4' };
 
@@ -61,6 +62,12 @@ export function renderBlock(b, kids) {
     return el('div', { class: 'nb-column' }, b.children ? kids(b.children) : null);
 
   if (t === 'table') return renderTable(b);
+
+  if (t === 'video' || t === 'embed') {
+    const m = mediaEl(b.url);
+    return m ? el('figure', { class: 'nb-figure' }, m,
+      b.caption && b.caption.length ? el('figcaption', {}, richText(b.caption)) : null) : null;
+  }
 
   if (t === 'child_page')
     return el('a', { class: 'nb-childpage', href: `project.html?id=${encodeURIComponent(b.slug || '')}` },

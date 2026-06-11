@@ -16,6 +16,12 @@ class Handler(SimpleHTTPRequestHandler):
     def log_message(self, *a):
         pass
 
+    def end_headers(self):
+        # JS/CSS/HTML은 항상 재검증 — 모듈 신·구 버전이 섞여 깨지는 것 방지
+        if self.path.split("?")[0].endswith((".js", ".css", ".html", ".json")) or self.path == "/":
+            self.send_header("Cache-Control", "no-cache")
+        super().end_headers()
+
     def _json(self, code, obj):
         body = json.dumps(obj, ensure_ascii=False).encode()
         self.send_response(code)

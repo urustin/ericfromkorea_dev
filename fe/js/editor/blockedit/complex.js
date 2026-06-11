@@ -3,8 +3,9 @@
 import { el } from '../../dom.js';
 import { spansToHtml, htmlToSpans } from './model.js';
 import { buildChildPage, serChildPage } from './childpage.js';
+import { buildVideo, buildEmbed, serMedia } from './media.js';
 
-export const COMPLEX = new Set(['toggle', 'table', 'column_list', 'bookmark', 'child_page']);
+export const COMPLEX = new Set(['toggle', 'table', 'column_list', 'bookmark', 'child_page', 'video', 'embed']);
 
 // 자식 블록 편집 영역 (재귀). 비어 있으면 빈 문단 하나로 시작.
 export function kidsEl(children, mk) {
@@ -125,6 +126,8 @@ export function buildComplex(b, mk) {
   if (b.type === 'column_list') return buildCols(b, mk);
   if (b.type === 'table') return buildTable(b);
   if (b.type === 'child_page') return buildChildPage(b);
+  if (b.type === 'video') return buildVideo(b);
+  if (b.type === 'embed') return buildEmbed(b);
   return buildBookmark(b);
 }
 
@@ -133,5 +136,6 @@ export function serializeComplex(main, type, ser) {
   if (type === 'column_list') return serCols(main, ser);
   if (type === 'table') return serTable(main);
   if (type === 'child_page') return serChildPage(main);
+  if (type === 'video' || type === 'embed') return serMedia(main, type);
   return serBookmark(main);
 }

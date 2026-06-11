@@ -3,6 +3,7 @@
 import json, os, sys, time, urllib.request, urllib.error
 from pathlib import Path
 from slugs import SLUGS  # {slug: page_id}
+from media import spans, dl_image, media_node
 
 TOKEN = os.environ["NOTION_TOKEN"]
 FE = Path("/home/son/prj/dev_portfolio/fe")
@@ -13,7 +14,7 @@ HDR = {"Authorization": f"Bearer {TOKEN}", "Notion-Version": "2022-06-28"}
 KEEP = {"paragraph", "heading_1", "heading_2", "heading_3", "bulleted_list_item",
         "numbered_list_item", "to_do", "quote", "callout", "code", "divider",
         "image", "toggle", "column_list", "column", "table", "table_row", "bookmark",
-        "child_page"}
+        "child_page", "video", "embed"}
 SUBPAGES = {}  # 서브페이지 레지스트리 {slug: {"title", "parent"}}
 
 
@@ -44,39 +45,6 @@ def children(block_id):
     return out
 
 
-def spans(rich):
-    res = []
-    for r in rich or []:
-        a = r.get("annotations", {})
-        s = {"text": r.get("plain_text", "")}
-        for k in ("bold", "italic", "strikethrough", "underline", "code"):
-            if a.get(k):
-                s[k] = True
-        if a.get("color") and a["color"] != "default":
-            s["color"] = a["color"]
-        if r.get("href"):
-            s["href"] = r["href"]
-        res.append(s)
-    return res
-
-
-def dl_image(block, slug, idx):
-    img = block["image"]
-    url = img.get("file", {}).get("url") or img.get("external", {}).get("url")
-    if not url:
-        return None
-    ext = ".png"
-    for e in (".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"):
-        if e in url.lower().split("?")[0]:
-            ext = e; break
-    d = IMGDIR / slug
-    d.mkdir(parents=True, exist_ok=True)
-    fname = f"{idx:02d}{ext}"
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=60) as r, open(d / fname, "wb") as f:
-        f.write(r.read())
-    cap = spans(img.get("caption"))
-    return {"type": "image", "src": f"assets/img/projects/{slug}/{fname}", "caption": cap}
 
 
 def norm(blocks, slug, counter):
@@ -92,6 +60,11 @@ def norm(blocks, slug, counter):
             (OUT / f"{sub}.json").write_text(json.dumps(
                 norm(children(b["id"]), sub, [0]), ensure_ascii=False, separators=(",", ":")))
             out.append({"type": "child_page", "title": title, "slug": sub})
+            continue
+        if t in ("video", "embed"):  # 동영상/임베드: URL 보존, 업로드 파일은 다운로드
+            node = media_node(b, slug, t)
+            if node:
+                out.append(node)
             continue
         if t == "image":
             counter[0] += 1

@@ -37,7 +37,8 @@ const header = el('div', { class: 'db-header' },
     ? el('button', { class: 'btn btn--primary', style: { marginTop: '12px' }, onClick: newPage }, '＋ 새 페이지')
     : null);
 
-mount('#app', header, buildToolbar(state, refresh), count,
+const { viewTabs } = await import('./views.js');
+mount('#app', header, viewTabs('table'), buildToolbar(state, refresh), count,
   el('div', { class: 'db-card' }, table));
 refresh();
 

@@ -11,8 +11,9 @@ import { placeCaret } from './caret.js';
 import { editActions } from '../bar.js';
 import { saveDetail, uploadImage, createSubpage } from '../api.js';
 
-export function mountBlockEditor(slug, blocks) {
+export function mountBlockEditor(slug, blocks, opts = {}) {
   window.__editing = true;
+  const back = opts.back || `project.html?id=${slug}`;
   const surface = el('div', { class: 'ne' });
   (blocks.length ? blocks : [{ type: 'paragraph', rich: [] }])
     .forEach((b) => surface.append(makeBlockEl(b)));
@@ -102,8 +103,9 @@ export function mountBlockEditor(slug, blocks) {
   });
 
   document.querySelector('#app').replaceChildren(
-    el('a', { class: 'back', href: `project.html?id=${slug}` }, '← 보기로'),
-    el('h1', {}, '본문 편집'),
+    el('a', { class: 'back', href: back }, '← 보기로'),
+    el('h1', {}, opts.title || '본문 편집'),
+    opts.head || null,
     el('p', { class: 'muted ne-hint' }, "‘/’ 블록 메뉴 · 마크다운(#, -, 1., >, ```, ---) · Tab 들여쓰기 · ⠿ 드래그 정렬 · 선택 후 색상(A▾)"),
     surface);
   document.body.append(api.slash.el, toolbar.el);
@@ -111,8 +113,11 @@ export function mountBlockEditor(slug, blocks) {
   const save = async (msg) => {
     msg.textContent = '저장 중…';
     const data = [...surface.querySelectorAll(':scope > .ne-block')].map(blockToData);
-    try { await saveDetail(slug, data); location.href = `project.html?id=${slug}`; }
-    catch (e) { msg.textContent = e.message; }
+    try {
+      if (opts.onSave) await opts.onSave(data);
+      else await saveDetail(slug, data);
+      location.href = back;
+    } catch (e) { msg.textContent = e.message; }
   };
   editActions({ onSave: save, onCancel: () => location.reload() });
 }

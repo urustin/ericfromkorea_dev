@@ -137,3 +137,7 @@ tr:hover .ne-xbtn { opacity:1; }
   border-radius:var(--radius); padding:8px 10px; }
 .ne-childpage__t { flex:1; font-weight:600; }
 .ne-childpage__go { text-decoration:none; color:var(--ink-soft); }
+
+/* 동영상/임베드 편집 */
+.ne-media__bar { display:flex; gap:8px; align-items:center; margin-bottom:6px; }
+.ne-media__url { flex:1; height:30px; }
