@@ -45,4 +45,4 @@ refresh();
 mountBar(async () => {
   const { editProjects } = await import('../editor/projectsEditor.js');
   editProjects();
-}, { sync: true });
+}, { sync: '--db-only' });

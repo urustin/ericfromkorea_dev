@@ -6,6 +6,7 @@ FE = Path(os.environ.get("FE_DIR", "/home/son/prj/dev_portfolio/fe"))
 IMGDIR = FE / "assets" / "img" / "projects"
 VIDDIR = FE / "assets" / "video"
 EXTS = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".mp4", ".webm", ".mov")
+SKIP_EXISTING = False  # True면 이미 받은 미디어 재다운로드 생략 (전체 동기화 속도용)
 
 
 def spans(rich):
@@ -34,6 +35,8 @@ def _ext_of(url, default):
 
 
 def _download(url, dest: Path):
+    if SKIP_EXISTING and dest.exists() and dest.stat().st_size > 0:
+        return
     dest.parent.mkdir(parents=True, exist_ok=True)
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=120) as r, open(dest, "wb") as f:

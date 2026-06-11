@@ -53,4 +53,4 @@ mount('#app',
     el('p', { class: 'muted' }, '지금까지 진행한 개발 프로젝트 데이터베이스입니다.')),
   viewTabs('gallery'), buildToolbar(state, refresh), count, grid);
 refresh();
-mountBar(null, { sync: true });
+mountBar(null, { sync: '--db-only' });

@@ -19,6 +19,9 @@ async function runSync(slug, btn) {
         if (s.ok === false) throw new Error('동기화 실패\n' + (s.log || ''));
         return location.reload();
       }
+      // 추출기 마지막 로그 줄로 진행 상황 표시
+      const last = (s.log || '').trim().split('\n').pop() || '';
+      btn.textContent = `⟳ ${last.slice(0, 28) || '동기화 중'}… ${s.elapsed || ''}s`;
     }
   } catch (e) {
     alert(e.message);

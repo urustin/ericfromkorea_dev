@@ -3,7 +3,9 @@
 import json, os, sys, time, urllib.request, urllib.error
 from pathlib import Path
 from slugs import SLUGS  # {slug: page_id}
+import media
 from media import spans, dl_image, media_node
+from dbsync import sync_projects
 
 TOKEN = os.environ["NOTION_TOKEN"]
 FE = Path(os.environ.get("FE_DIR", "/home/son/prj/dev_portfolio/fe"))
@@ -105,10 +107,18 @@ def norm(blocks, slug, counter):
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     only = set(sys.argv[1:])  # 인자로 slug를 주면 해당 페이지만 동기화
+    db_only = "--db-only" in only  # 목록 페이지용: DB 행 정보만 갱신, 본문은 생략
+    only -= {"--db-only"}
+    media.SKIP_EXISTING = not only  # 전체 동기화는 기존 미디어 재다운로드 생략(속도)
+    # 프로젝트 DB(이름/상태/날짜/스킬 등) 동기화 — 새 행은 본문도 함께 추출
+    rowmap = sync_projects(TOKEN, SLUGS)
+    if db_only:
+        return
+    pages = {**SLUGS, **rowmap}
     reg_path = FE / "js" / "data" / "subpages.json"
     if reg_path.exists():  # 기존 레지스트리 유지(에디터에서 만든 서브페이지 보존)
         SUBPAGES.update(json.loads(reg_path.read_text()))
-    for slug, pid in SLUGS.items():
+    for slug, pid in pages.items():
         if only and slug not in only:
             continue
         blocks = norm(children(pid), slug, [0])
