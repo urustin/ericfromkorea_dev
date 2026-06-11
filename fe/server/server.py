@@ -43,6 +43,12 @@ class Handler(SimpleHTTPRequestHandler):
         host = self.headers.get("Host", "")
         if self.path == "/" and host.startswith("dev."):
             self.path = "/portfolio.html"
+        # 확장자 없는 경로는 .html로 매핑 (/login → login.html 등 clean URL)
+        bare = self.path.split("?")[0]
+        if "." not in bare.rstrip("/") and bare != "/" and not bare.startswith("/api"):
+            cand = bare.rstrip("/") + ".html"
+            if os.path.isfile(os.path.join(APP, cand.lstrip("/"))):
+                self.path = cand
         return super().do_GET()
 
     def do_POST(self):

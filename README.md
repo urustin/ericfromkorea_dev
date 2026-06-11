@@ -71,7 +71,12 @@ python3 optimize_images.py                           # 이미지 최적화
 scp <변경파일> aoo:~/prj/dev_portfolio/<경로>
 ssh aoo 'cd ~/prj/dev_portfolio/fe && docker build -t dev-portfolio-fe . \
   && docker rm -f dev-portfolio-fe \
-  && docker run -d --name dev-portfolio-fe -p 60022:8000 --restart unless-stopped dev-portfolio-fe'
+  && docker run -d --name dev-portfolio-fe -p 60022:8000 --restart unless-stopped \
+       --env-file ~/prj/dev_portfolio/.editor-secret dev-portfolio-fe'
+```
+
+**주의:** `--env-file`을 빼먹으면 에디터 로그인이 안 된다 (`EDITOR_PASSWORD`/`EDITOR_SECRET` 필요).
+```bash
 ```
 
 ### 3. 허브 페이지 갱신 (son-wtr cron이 매일 11:00 자동 실행)
