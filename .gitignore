@@ -16,3 +16,6 @@ __pycache__/
 
 # 데이터 폴더 (전역 규칙)
 data/
+
+# 외부 참조용 다운로드 (Notion Electron 래퍼)
+notion-electron/
